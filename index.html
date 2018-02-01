@@ -233,7 +233,7 @@
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        1.查看磁盘具体占用情况Copy Code12345678910[root@localhost gsidc]# df -hTFilesystem     Type      Size  Used Avail Use% Mounted on/dev/sda3      xfs        92G   21G   72G  23% /devtmpfs       devtmpfs  7.8G ...
+        1.查看磁盘具体占用情况12345678910[root@localhost gsidc]# df -hTFilesystem     Type      Size  Used Avail Use% Mounted on/dev/sda3      xfs        92G   21G   72G  23% /devtmpfs       devtmpfs  7.8G     0  7....
     
 
         <a href="/blogs/2018/02/01/CentOS磁盘空间爆满的解决办法/" class="post-more waves-effect waves-button">
@@ -279,8 +279,8 @@
                 
                 集群规划图片
             
-一、Nginx的安装过程1.下载Nginx安装包，安装依赖环境包(1)安装 C++编译环境Copy Code1yum  -y install gcc   #C++
-(2...
+一、Nginx的安装过程1.下载Nginx安装包，安装依赖环境包(1)安装 C++编译环境1yum  -y install gcc   #C++
+(2)安装pcre1y...
     
 
         <a href="/blogs/2018/02/01/Keepalived+Nginx+Tomcat_实现高可用Web集群/" class="post-more waves-effect waves-button">
@@ -364,8 +364,9 @@
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        1.检查是否已经具有MariaDB相关安装，并删除已有安装Copy Code12[root@hadoop01 home]# rpm -qa|grep mariadb  #查询已安装包mariadb-libs-5.5.52-1.el7.x86_64
-1234[root@hadoop01 home]# rpm -e --nodeps mariadb-*   # 移除已安装包错误：未安装软件包 m...
+        1.检查是否已经具有MariaDB相关安装，并删除已有安装12[root@hadoop01 home]# rpm -qa|grep mariadb  #查询已安装包mariadb-libs-5.5.52-1.el7.x86_64
+12[root@hadoop01 home]# rpm -e --nodeps mariadb-*   # 移除已安装包错误：未安装软件包 mariadb-*
+12...
     
 
         <a href="/blogs/2018/02/01/Centos7.2安装MariaDB/" class="post-more waves-effect waves-button">
@@ -404,9 +405,9 @@
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        1.登录Copy Code1cd usr/local/mysql/bin   ---&gt;./myql -uroot
-2.创建数据库Copy Code1CREATE DATABASE IF NOT EXISTS jxytest DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
-3.为用户授权操作数据库Copy Code1grant all on j...
+        1.登录1cd usr/local/mysql/bin   ---&gt;./myql -uroot
+2.创建数据库1CREATE DATABASE IF NOT EXISTS jxytest DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+3.为用户授权操作数据库1grant all on jxytest.* to &apos;yxy_jx&ap...
     
 
         <a href="/blogs/2018/02/01/Mysql_操作笔记/" class="post-more waves-effect waves-button">
