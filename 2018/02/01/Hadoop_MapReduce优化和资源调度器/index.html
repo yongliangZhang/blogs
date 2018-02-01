@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Hadoop MapReduce优化和资源调度器 | YoungLiang | 生活充满乐趣与童真</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="">
+    <meta name="description" content="Hadoop Shuffle过程              1.Hadoop MapReduce Shuffle过程">
+<meta name="keywords" content="程序猿、跳舞爱好者、读书">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hadoop MapReduce优化和资源调度器">
+<meta property="og:url" content="https://yongliangzhang.github.io/blogs/2018/02/01/Hadoop_MapReduce优化和资源调度器/index.html">
+<meta property="og:site_name" content="YoungLiang">
+<meta property="og:description" content="Hadoop Shuffle过程              1.Hadoop MapReduce Shuffle过程">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1784853-a9deb9418a339af6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1784853-a9deb9418a339af6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1784853-0526447f1e1ba015.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1784853-2b84e712726ccd27.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1784853-21603d1cdbfffd40.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-02-01T06:05:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hadoop MapReduce优化和资源调度器">
+<meta name="twitter:description" content="Hadoop Shuffle过程              1.Hadoop MapReduce Shuffle过程">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1784853-a9deb9418a339af6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+    
+        <link rel="alternate" type="application/atom+xml" title="YoungLiang" href="/blogs/atom.xml">
+    
+    <link rel="shortcut icon" href="/blogs/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/blogs/img/brand.jpg)">
+      <div class="brand">
+        <a href="/blogs/" class="avatar waves-effect waves-circle waves-light">
+          <img src="https://s1.ax2x.com/2018/01/31/ZL8UG.png">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">YoungLiang</h5>
+          <a href="mailto:zhangyongliang1231@163.com" title="zhangyongliang1231@163.com" class="mail">zhangyongliang1231@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                历程
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/yongliangZhang" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://www.jianshu.com/u/31c3a36c409d" target="_blank" >
+                <i class="icon icon-lg icon-book"></i>
+                简书
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Hadoop MapReduce优化和资源调度器</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Hadoop MapReduce优化和资源调度器</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-02-01T06:06:18.374Z" itemprop="datePublished" class="page-time">
+  2018-02-01
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#1-Hadoop-MapReduce-Shuffle过程"><span class="post-toc-number">1.</span> <span class="post-toc-text">1.Hadoop MapReduce Shuffle过程</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#2-Shuffle过程要点记录"><span class="post-toc-number">2.</span> <span class="post-toc-text">2.Shuffle过程要点记录</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#3-Combinery优化总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">3. Combinery优化总结</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#4-YARN-资源调度器"><span class="post-toc-number">4.</span> <span class="post-toc-text">4.YARN 资源调度器</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-YARN-FIFO-Scheduler"><span class="post-toc-number">4.0.0.1.</span> <span class="post-toc-text">1. YARN-FIFO Scheduler</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-YARN-多队列分开调度器"><span class="post-toc-number">4.0.0.2.</span> <span class="post-toc-text">2. YARN-多队列分开调度器</span></a></li></ol></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Hadoop_MapReduce优化和资源调度器"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Hadoop MapReduce优化和资源调度器</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-02-01 14:06:18" datetime="2018-02-01T06:06:18.374Z"  itemprop="datePublished">2018-02-01</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://upload-images.jianshu.io/upload_images/1784853-a9deb9418a339af6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Hadoop Shuffle过程" title="">
+                </div>
+                <div class="image-caption">Hadoop Shuffle过程</div>
+            </figure>
+<h1 id="1-Hadoop-MapReduce-Shuffle过程"><a href="#1-Hadoop-MapReduce-Shuffle过程" class="headerlink" title="1.Hadoop MapReduce Shuffle过程"></a>1.Hadoop MapReduce Shuffle过程</h1><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://upload-images.jianshu.io/upload_images/1784853-a9deb9418a339af6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Hadoop Shuffle过程" title="">
+                </div>
+                <div class="image-caption">Hadoop Shuffle过程</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://upload-images.jianshu.io/upload_images/1784853-0526447f1e1ba015.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Map Shuffle过程图2" title="">
+                </div>
+                <div class="image-caption">Map Shuffle过程图2</div>
+            </figure>
+<h1 id="2-Shuffle过程要点记录"><a href="#2-Shuffle过程要点记录" class="headerlink" title="2.Shuffle过程要点记录"></a>2.Shuffle过程要点记录</h1><ol>
+<li>每个Map Task把输出结果写到内存中的环形缓冲区。</li>
+<li>当内存环形缓冲区写入的数据量达到一定阈值时，后台线程会把 数据溢写到磁盘。<ul>
+<li>根据Partitioner，把数据写入到不同的partition</li>
+<li>对于每个partition的数据进行排序</li>
+</ul>
+</li>
+<li>随着Map Task的不断运行，磁盘上的溢出文件越来越多<ul>
+<li>将这些溢出文件合并<ul>
+<li>对于一个partition下的不同分片，使用归并排序，同一分区内数据有序</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Reduce Task通过网络远程拷贝MapTask的结果文件中的属于它的分区数据<ul>
+<li>合并所有已拷贝过来的数据文件</li>
+<li>采用归并排序算法，对文件数据内容整理排序，将相同key的数据分 为一组，不同key之间有序</li>
+<li>最终生成一个key对应一组值的数据集，一个key对应的一组数据会调用一次reduce方法<h1 id="3-Combinery优化总结"><a href="#3-Combinery优化总结" class="headerlink" title="3. Combinery优化总结"></a>3. Combinery优化总结</h1><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://upload-images.jianshu.io/upload_images/1784853-2b84e712726ccd27.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Combiner优化" title="">
+                </div>
+                <div class="image-caption">Combiner优化</div>
+            </figure></li>
+</ul>
+</li>
+<li>Combiner调用的地方<ul>
+<li>MapTask的环形缓冲区向磁盘溢写文件之前调用Combiner</li>
+<li>Map阶段在合并本地多个文件写入一个大文件之前调用Combiner</li>
+</ul>
+</li>
+<li>使用Combiner的好处<ul>
+<li>减少Map Task输出数据量，由于临时结果写入到本地磁盘，所以能 够减少磁盘IO</li>
+<li>减少Reduce-Map网络传输数据量，由于reduce需要远程通过网络从 Map拷贝数据，提高拷贝速度</li>
+</ul>
+</li>
+<li>应用场景<ul>
+<li>针对结果可以叠加的场景</li>
+<li>SUM(YES) Average（NO）</li>
+</ul>
+</li>
+<li>设置方法（local reducer）<ul>
+<li>job.setCombinerClass(WordCountReducer.class)<h1 id="4-YARN-资源调度器"><a href="#4-YARN-资源调度器" class="headerlink" title="4.YARN 资源调度器"></a>4.YARN 资源调度器</h1><h4 id="1-YARN-FIFO-Scheduler"><a href="#1-YARN-FIFO-Scheduler" class="headerlink" title="1. YARN-FIFO Scheduler"></a>1. YARN-FIFO Scheduler</h4><strong>将所有应用程序放入到一个队列中</strong></li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>先进入队里排在前面的程序先获得资源<br><strong>局限性</strong></li>
+<li>资源利用率低，无法交叉运行作业</li>
+<li>不够灵活，比如紧急的作业无法插队，耗时长作业拖慢耗时短作业<h4 id="2-YARN-多队列分开调度器"><a href="#2-YARN-多队列分开调度器" class="headerlink" title="2. YARN-多队列分开调度器"></a>2. YARN-多队列分开调度器</h4><strong>所有资源按照比例划分到不同的队列</strong><br></li>
+</ul>
+<p><strong>每个队列可以实现单独的调度策略</strong><br></p>
+<p><strong>优点</strong><br></p>
+<ul>
+<li>按照不同的资源使用情况将资源划分到不同队列</li>
+<li>能够让更多的应用程序获得资源</li>
+<li>使用灵活，资源利用率高<br></li>
+<li><p><strong>调度器</strong></p>
+</li>
+<li><p>CapacityScheduler调度器</p>
+</li>
+<li>FairScheduler调度器</li>
+</ul>
+<p><strong>CapacityScheduler</strong></p>
+<ul>
+<li>由Yahoo开源，共享集群调度器</li>
+<li>以队列方式组织作业</li>
+<li>每个队列内部采用FIFO调度策略</li>
+<li>每个队列分配一定比例资源</li>
+<li>可限制每个用户使用资源量<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://upload-images.jianshu.io/upload_images/1784853-21603d1cdbfffd40.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="CapacityScheduler.png" title="">
+                </div>
+                <div class="image-caption">CapacityScheduler.png</div>
+            </figure>
+<strong>CapacityScheduler 配置方法</strong></li>
+</ul>
+<p>在yarn-site.xml 设置使用CapacityScheduler调度器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">    &lt;name&gt;yarn.resourcemanager.scheduler.class&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+<p>在Hadoop配置文件目录下/usr/local/hadoop/etc/hadoop创建capacity-scheduler.xml,添加信息如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.scheduler.capacity.root.queues&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;default,data-bi&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.scheduler.capacity.root.default.capacity&lt;/name&gt; </span><br><span class="line">        &lt;value&gt;60&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.scheduler.capacity.root.default.maximum-capacity&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;80&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.scheduler.capacity.root.bi.capacity&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;40&lt;/vaule&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>配置说明</strong><br></p>
+<ul>
+<li>capacity-scheduler.xml参数说明</li>
+<li>capacity：队列占用的集群资源容量百分比，所有队列的容量 之和应小于100</li>
+<li>maximum-capacity：由于存在资源共享，因此一个队列使用 的资源量可能超过其容量，而最多使用资源量可通过该参数 限制</li>
+<li>配置完成无需重启YARN，使用管理命令刷新调度配置 bin/yarn rmadmin -refreshQueues</li>
+</ul>
+<p><strong>FairScheduler</strong><br><br> 公平调度器的目的:</p>
+<ul>
+<li>允许多用户共享集群资源。</li>
+<li>允许短时的临时作业与长时作业共享集群资源</li>
+<li>根据比例来管理集群资源，确保集群资源的有效利用’</li>
+</ul>
+<p><strong>FairScheduler配置方法</strong><br>在Hadoop配置目录下/usr/local/hadoop/etc/hadoop yarn-site.xml 增加如下信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">	    &lt;name&gt;yarn.resourcemanager.scheduler.class&lt;/name&gt;</span><br><span class="line">		&lt;value&gt;org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler&lt;/value&gt;</span><br><span class="line">	&lt;/property&gt;</span><br><span class="line">	&lt;property&gt;</span><br><span class="line">		&lt;name&gt;yarn.scheduler.fair.user-as-default-queue&lt;/name&gt;</span><br><span class="line">		&lt;value&gt;true&lt;/value&gt;</span><br><span class="line">	&lt;/property&gt;</span><br><span class="line">	&lt;property&gt;</span><br><span class="line">		&lt;name&gt;yarn.scheduler.fair.allocation.file&lt;/name&gt;</span><br><span class="line">		&lt;value&gt;/usr/local/hadoop/etc/hadoop/fair-scheduler.xml&lt;/value&gt;</span><br><span class="line">	&lt;/property&gt;</span><br><span class="line">	&lt;property&gt;</span><br><span class="line">		&lt;name&gt;yarn.scheduler.fair.preemption&lt;/name&gt;</span><br><span class="line">		&lt;value&gt;true&lt;/value&gt;</span><br><span class="line">	&lt;/property&gt;</span><br></pre></td></tr></table></figure></p>
+<p>新建一个公平调度配置文件fair-scheduler.xml ，信息如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;allocations&gt;</span><br><span class="line">	&lt;queue name=&quot;data_bi&quot;&gt;</span><br><span class="line">		&lt;minResources&gt;8000 mb,4 vcores&lt;/minResources&gt;</span><br><span class="line">		&lt;maxResources&gt;10000 mb, 6 vcores&lt;/maxResources&gt;</span><br><span class="line">		&lt;maxRunningApps&gt;2&lt;/maxRunningApps&gt;</span><br><span class="line">		&lt;weight&gt;1.0&lt;/weight&gt;</span><br><span class="line">	&lt;/queue&gt;</span><br><span class="line">&lt;/allocations&gt;</span><br></pre></td></tr></table></figure>
+<p>上述配置以 data_bi 用户名作为公平调度的队列名称。</p>
+<p><strong>yarn-site.xml参数说明</strong></p>
+<ul>
+<li>yarn.resourcemanager.scheduler.class配置yarn使用的调度器类型</li>
+<li>yarn.scheduler.fair.allocation.file配置公平调度器自定义配置文件路径，该文件每隔10秒就会被加载一次，这样就可以在集群运行过程中改变队列的配置</li>
+<li>yarn.scheduler.fair.user-as-default-queue当应用程序未指定队列名时，是否指定用户名作为应用程序所在的队列名。如果设置为false或者未设置，所有 未知队列的应用程序将被提交到default队列中，默认值为true</li>
+<li>yarn.scheduler.fair.preemption如果一个队列占用的资源量少于最小资源量限制，是否启用资源抢占，默认false。抢占机制可以使其他队列的作业容器终止，从而使占用的资源让出，将资源分配给占用资源量少于最小资源量限制的队列<br></li>
+</ul>
+<p><strong>fair-scheduler.xml参数说明</strong></p>
+<ul>
+<li>queue name：配置队列名</li>
+<li>minResources ：分配给该队列的最小资源量，设置格式为“X mb, Y vcores”，当调度策略属性schedulingPolicy的属性值是fair时，其cores值会被忽略，仅按照申请的内存大小来调度。</li>
+<li>maxResources：分配给该队列的最大资源量。设置格式为“X mb, Y vcores”，当调度策略属性schedulingPolicy的属性值是fair时，其cores值会被忽略，仅按照申请的内存大小来调度。</li>
+<li>maxRunningApps：最多同时运行的应用程序数目。通过限制该数目，可防止超量MapTask同时运行时产生的中间输出结果撑爆磁盘。</li>
+<li>weight：标记了资源池的权重，当资源池中有任务等待，并且集群中有空闲资源时候，每个资源池可以根据权重获得不同比例的集群空闲资源，默认值是1</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-02-01T06:05:34.000Z" itemprop="dateUpdated">2018-02-01 14:05:34</time>
+</span><br>
+
+
+        
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/blogs/2018/02/01/Hadoop_MapReduce优化和资源调度器/" target="_blank" rel="external">https://yongliangzhang.github.io/blogs/2018/02/01/Hadoop_MapReduce优化和资源调度器/</a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://yongliangzhang.github.io/blogs">
+            <img src="https://s1.ax2x.com/2018/01/31/ZL8UG.png" alt="YoungLiang">
+            YoungLiang
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://yongliangzhang.github.io/blogs/2018/02/01/Hadoop_MapReduce优化和资源调度器/&title=《Hadoop MapReduce优化和资源调度器》 — YoungLiang&pic=https://s1.ax2x.com/2018/01/31/ZL8UG.png" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://yongliangzhang.github.io/blogs/2018/02/01/Hadoop_MapReduce优化和资源调度器/&title=《Hadoop MapReduce优化和资源调度器》 — YoungLiang&source=用心生活！创造非凡人生" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://yongliangzhang.github.io/blogs/2018/02/01/Hadoop_MapReduce优化和资源调度器/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Hadoop MapReduce优化和资源调度器》 — YoungLiang&url=https://yongliangzhang.github.io/blogs/2018/02/01/Hadoop_MapReduce优化和资源调度器/&via=https://yongliangzhang.github.io/blogs" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://yongliangzhang.github.io/blogs/2018/02/01/Hadoop_MapReduce优化和资源调度器/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/blogs/2018/02/01/CentOS磁盘空间爆满的解决办法/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">CentOS磁盘空间爆满的解决办法</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="https://s1.ax2x.com/2018/02/01/Zxkyd.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="https://s1.ax2x.com/2018/02/01/Zxkyd.png" data-alipay="https://s1.ax2x.com/2018/02/01/ZxllR.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/blogs/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>YoungLiang &copy; 2015 - 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://yongliangzhang.github.io/blogs/2018/02/01/Hadoop_MapReduce优化和资源调度器/&title=《Hadoop MapReduce优化和资源调度器》 — YoungLiang&pic=https://s1.ax2x.com/2018/01/31/ZL8UG.png" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://yongliangzhang.github.io/blogs/2018/02/01/Hadoop_MapReduce优化和资源调度器/&title=《Hadoop MapReduce优化和资源调度器》 — YoungLiang&source=用心生活！创造非凡人生" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://yongliangzhang.github.io/blogs/2018/02/01/Hadoop_MapReduce优化和资源调度器/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Hadoop MapReduce优化和资源调度器》 — YoungLiang&url=https://yongliangzhang.github.io/blogs/2018/02/01/Hadoop_MapReduce优化和资源调度器/&via=https://yongliangzhang.github.io/blogs" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://yongliangzhang.github.io/blogs/2018/02/01/Hadoop_MapReduce优化和资源调度器/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADMElEQVR42u3aQW7jQAwEQP//09nrLhZSmuQYsOjSyQhkaWpyoMme1yu+fi6u/+9J/vL3368+X91/tbbXOy5sbGzsh7B/bq+re5LtuCcli64+ObFgY2Njb2XfL+jq0UmNqCKTVR3YXGxsbOwvZveW2CuBk8KGjY2NjZ3/3J88pwqblD1sbGzs3ex8PHT/yvvwIA8M8r+8fZaGjY2N/fHsPBX9/M9vybexsbGxP5j9U7zyViEvIcm4vzeWuvwWNjY29iJ2XgDueUkAnLQWvbFRc/3Y2NjYK9iTwhON4FtNzoFh0P16sLGxsRexe+FrvsTe+D5vTvLg4Zd8GxsbG/ux7N6BmPmC8iI6iYovP2NjY2MvZfcO6FQxCSMfY+XfwsbGxt7Nnv/Ez+PV/BhltaUpjJawsbGxF7F7kWqyuPzoT77QPEguTNSwsbGxV7CrhxqTRff2vjquGg22sLGxsVewJ8FA9ed+Ts1DiN42YWNjY29iJ0vslbTeUZ68HeptOjY2Nva3sSchbu/wzdkylr8RGxsb++nsvGBMBky9YLh66CcfVGFjY2PvYzcHMYMzMM0sOogBDvRb2NjY2I9iV9uGamsxGRuVGdVvYWNjYz+cnZeuSTsxefKpkdM/92NjY2OvY1dfHx1wDGB5g5G3H9F2Y2NjYy9iT8ZAybGeKr66xfmGHpt+YWNjY38Yu7fc6oC+d+fZYVbUimBjY2M/nD2JWqublTdCvcTjl+dgY2NjL2JP2oxJ8asexKmGvuVxEjY2NvbD2ZOjM/OQoFfqJs0JNjY29j528vpq6FstJ73ydvgIJjY2NvbD2b3od374pncdiJ+xsbGx17HzYzQ58lTA0Bsq/bJN2NjY2EvZvYYhb10mo6h5SICNjY29jz1pAJI2IN/KyaC/uk5sbGzsTez8yoPYZCxVfU5vJff/BmxsbOxN7N4gPm8A8mYmjxCqw6loloaNjY39cHYVkA+VJpFwdexVCCGwsbGxv5hdLTa9gVEvBi5sPTY2NvYXs/MDPdXIYVSQ4rdjY2Njb2WfCnd7w/1q+emFDdjY2Nhb2b2hfzUxnqTNeVN06o3Y2NjYD2H/AeQTm6dlBDDWAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/blogs/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '就这样走啦？';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎访问YoungLiang小站';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

@@ -13,25 +13,25 @@
     
     
     
-    <title>Hello World | YoungLiang | 生活充满乐趣与童真</title>
+    <title>Mysql 操作笔记 | YoungLiang | 生活充满乐趣与童真</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta name="theme-color" content="#3F51B5">
     
     
     <meta name="keywords" content="">
-    <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+    <meta name="description" content="1.登录1cd usr/local/mysql/bin   ---&amp;gt;./myql -uroot 2.创建数据库1CREATE DATABASE IF NOT EXISTS jxytest DEFAULT CHARSET utf8 COLLATE utf8_general_ci; 3.为用户授权操作数据库1grant all on jxytest.* to &amp;apos;yxy_jx&amp;apos;">
 <meta name="keywords" content="程序猿、跳舞爱好者、读书">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="https://yongliangzhang.github.io/blogs/2018/01/30/hello-world/index.html">
+<meta property="og:title" content="Mysql 操作笔记">
+<meta property="og:url" content="https://yongliangzhang.github.io/blogs/2018/02/01/Mysql_操作笔记/index.html">
 <meta property="og:site_name" content="YoungLiang">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="1.登录1cd usr/local/mysql/bin   ---&amp;gt;./myql -uroot 2.创建数据库1CREATE DATABASE IF NOT EXISTS jxytest DEFAULT CHARSET utf8 COLLATE utf8_general_ci; 3.为用户授权操作数据库1grant all on jxytest.* to &amp;apos;yxy_jx&amp;apos;">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-30T14:51:46.487Z">
+<meta property="og:updated_time" content="2018-02-01T06:00:06.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta name="twitter:title" content="Mysql 操作笔记">
+<meta name="twitter:description" content="1.登录1cd usr/local/mysql/bin   ---&amp;gt;./myql -uroot 2.创建数据库1CREATE DATABASE IF NOT EXISTS jxytest DEFAULT CHARSET utf8 COLLATE utf8_general_ci; 3.为用户授权操作数据库1grant all on jxytest.* to &amp;apos;yxy_jx&amp;apos;">
     
         <link rel="alternate" type="application/atom+xml" title="YoungLiang" href="/blogs/atom.xml">
     
@@ -119,7 +119,7 @@
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">Hello World</div>
+        <div class="flex-col header-title ellipsis">Mysql 操作笔记</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
@@ -141,11 +141,11 @@
 <header class="content-header post-header">
 
     <div class="container fade-scale">
-        <h1 class="title">Hello World</h1>
+        <h1 class="title">Mysql 操作笔记</h1>
         <h5 class="subtitle">
             
-                <time datetime="2018-01-30T14:51:46.487Z" itemprop="datePublished" class="page-time">
-  2018-01-30
+                <time datetime="2018-02-01T06:00:52.735Z" itemprop="datePublished" class="page-time">
+  2018-02-01
 </time>
 
 
@@ -164,18 +164,18 @@
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Quick-Start"><span class="post-toc-number">1.</span> <span class="post-toc-text">Quick Start</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Create-a-new-post"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">Create a new post</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Run-server"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">Run server</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Generate-static-files"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">Generate static files</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Deploy-to-remote-sites"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-登录"><span class="post-toc-number">1.</span> <span class="post-toc-text">1.登录</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-创建数据库"><span class="post-toc-number">2.</span> <span class="post-toc-text">2.创建数据库</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-为用户授权操作数据库"><span class="post-toc-number">3.</span> <span class="post-toc-text">3.为用户授权操作数据库</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-刷出权限"><span class="post-toc-number">4.</span> <span class="post-toc-text">4.刷出权限</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-慢查询"><span class="post-toc-number">5.</span> <span class="post-toc-text">5.慢查询</span></a></li></ol>
         </nav>
     </aside>
 
 
-<article id="post-hello-world"
+<article id="post-Mysql_操作笔记"
   class="post-article article-type-post fade" itemprop="blogPost">
 
     <div class="post-card">
-        <h1 class="post-card-title">Hello World</h1>
+        <h1 class="post-card-title">Mysql 操作笔记</h1>
         <div class="post-meta">
-            <time class="post-time" title="2018-01-30 22:51:46" datetime="2018-01-30T14:51:46.487Z"  itemprop="datePublished">2018-01-30</time>
+            <time class="post-time" title="2018-02-01 14:00:52" datetime="2018-02-01T06:00:52.735Z"  itemprop="datePublished">2018-02-01</time>
 
             
 
@@ -188,15 +188,17 @@
 
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+            <h3 id="1-登录"><a href="#1-登录" class="headerlink" title="1.登录"></a>1.登录</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd usr/local/mysql/bin   ---&gt;./myql -uroot</span><br></pre></td></tr></table></figure>
+<h3 id="2-创建数据库"><a href="#2-创建数据库" class="headerlink" title="2.创建数据库"></a>2.创建数据库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE DATABASE IF NOT EXISTS jxytest DEFAULT CHARSET utf8 COLLATE utf8_general_ci;</span><br></pre></td></tr></table></figure>
+<h3 id="3-为用户授权操作数据库"><a href="#3-为用户授权操作数据库" class="headerlink" title="3.为用户授权操作数据库"></a>3.为用户授权操作数据库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grant all on jxytest.* to &apos;yxy_jx&apos;@&apos;%&apos; identified by &apos;lzyljd_yxyjx_2017&apos; with grant option;</span><br></pre></td></tr></table></figure>
+<h3 id="4-刷出权限"><a href="#4-刷出权限" class="headerlink" title="4.刷出权限"></a>4.刷出权限</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+<p>查看Mysql最大文件导入大小<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show VARIABLES like &apos;%max_allowed_packet%&apos;;</span><br></pre></td></tr></table></figure></p>
+<p>设置最大文件导入大小：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set global max_allowed_packet = 9*1024*1024*100; // 900M</span><br></pre></td></tr></table></figure></p>
+<h3 id="5-慢查询"><a href="#5-慢查询" class="headerlink" title="5.慢查询"></a>5.慢查询</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show status  显示系统状态参数</span><br></pre></td></tr></table></figure>
+<p>1.查询慢查询是否开启：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">show global variables like &apos;%slow_query%&apos;;</span><br><span class="line">slow_query_log 为OFF  表示没有开启，mysql默认是没有开启慢查询日志记录功能的</span><br><span class="line">set slow_query_log=1 开启慢查询日志记录</span><br></pre></td></tr></table></figure></p>
+<p>2.查看慢查询时间<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show variables like &apos;long_query_time&apos;; 默认为10秒钟，意识是大于10s才算慢查询</span><br></pre></td></tr></table></figure></p>
+<p>3.修改慢查询记录的时间<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set long_query_time=1; 设置时间为1s</span><br></pre></td></tr></table></figure></p>
+<p>4.记录慢查询日志的次数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show status like &apos;slow_queries&apos;;</span><br></pre></td></tr></table></figure></p>
 
         </div>
 
@@ -205,12 +207,12 @@
     <div class="content">
         
 <span class="post-time">
-    Last updated: <time datetime="2018-01-30T14:51:46.487Z" itemprop="dateUpdated">2018-01-30 22:51:46</time>
+    Last updated: <time datetime="2018-02-01T06:00:06.000Z" itemprop="dateUpdated">2018-02-01 14:00:06</time>
 </span><br>
 
 
         
-        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/blogs/2018/01/30/hello-world/" target="_blank" rel="external">https://yongliangzhang.github.io/blogs/2018/01/30/hello-world/</a>
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/blogs/2018/02/01/Mysql_操作笔记/" target="_blank" rel="external">https://yongliangzhang.github.io/blogs/2018/02/01/Mysql_操作笔记/</a>
         
     </div>
     
@@ -239,7 +241,7 @@
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://yongliangzhang.github.io/blogs/2018/01/30/hello-world/&title=《Hello World》 — YoungLiang&pic=https://s1.ax2x.com/2018/01/31/ZL8UG.png" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://yongliangzhang.github.io/blogs/2018/02/01/Mysql_操作笔记/&title=《Mysql 操作笔记》 — YoungLiang&pic=https://s1.ax2x.com/2018/01/31/ZL8UG.png" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -249,22 +251,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://yongliangzhang.github.io/blogs/2018/01/30/hello-world/&title=《Hello World》 — YoungLiang&source=用心生活！创造非凡人生" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://yongliangzhang.github.io/blogs/2018/02/01/Mysql_操作笔记/&title=《Mysql 操作笔记》 — YoungLiang&source=用心生活！创造非凡人生" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://yongliangzhang.github.io/blogs/2018/01/30/hello-world/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://yongliangzhang.github.io/blogs/2018/02/01/Mysql_操作笔记/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Hello World》 — YoungLiang&url=https://yongliangzhang.github.io/blogs/2018/01/30/hello-world/&via=https://yongliangzhang.github.io/blogs" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mysql 操作笔记》 — YoungLiang&url=https://yongliangzhang.github.io/blogs/2018/02/01/Mysql_操作笔记/&via=https://yongliangzhang.github.io/blogs" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://yongliangzhang.github.io/blogs/2018/01/30/hello-world/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://yongliangzhang.github.io/blogs/2018/02/01/Mysql_操作笔记/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -287,13 +289,20 @@
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/blogs/2018/02/01/Hive高级查询操作/" id="post-prev" class="post-nav-link">
+      <a href="/blogs/2018/02/01/Centos7.2安装MariaDB/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">Hive高级操作</h4>
+        <h4 class="title">Centos7.2安装MariaDB</h4>
       </a>
     </div>
   
 
+  
+    <div class="waves-block waves-effect next">
+      <a href="/blogs/2018/02/01/java_实现FastDFS文件操作/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">java 实现FastDFS文件操作</h4>
+      </a>
+    </div>
   
 </nav>
 
@@ -385,7 +394,7 @@
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://yongliangzhang.github.io/blogs/2018/01/30/hello-world/&title=《Hello World》 — YoungLiang&pic=https://s1.ax2x.com/2018/01/31/ZL8UG.png" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://yongliangzhang.github.io/blogs/2018/02/01/Mysql_操作笔记/&title=《Mysql 操作笔记》 — YoungLiang&pic=https://s1.ax2x.com/2018/01/31/ZL8UG.png" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -395,22 +404,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://yongliangzhang.github.io/blogs/2018/01/30/hello-world/&title=《Hello World》 — YoungLiang&source=用心生活！创造非凡人生" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://yongliangzhang.github.io/blogs/2018/02/01/Mysql_操作笔记/&title=《Mysql 操作笔记》 — YoungLiang&source=用心生活！创造非凡人生" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://yongliangzhang.github.io/blogs/2018/01/30/hello-world/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://yongliangzhang.github.io/blogs/2018/02/01/Mysql_操作笔记/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Hello World》 — YoungLiang&url=https://yongliangzhang.github.io/blogs/2018/01/30/hello-world/&via=https://yongliangzhang.github.io/blogs" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mysql 操作笔记》 — YoungLiang&url=https://yongliangzhang.github.io/blogs/2018/02/01/Mysql_操作笔记/&via=https://yongliangzhang.github.io/blogs" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://yongliangzhang.github.io/blogs/2018/01/30/hello-world/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://yongliangzhang.github.io/blogs/2018/02/01/Mysql_操作笔记/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -421,7 +430,7 @@
 <div class="page-modal wx-share" id="wxShare">
     <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACIUlEQVR42u3azW6EMAxGUd7/pemmi0oVzPcTRsK5rKoCmRwWlu34OOTrvLju7/595n7l/+scT1wwYMB4LUPZxNV/7n9+7cofPhAMGDA2YCihsI94WSi/3xsMGDBgXD3jvnUfRpXgCwMGDBgZY/FW5EAPAwaMPRlZita30pY18mDAgDGakW3oO38/cr4BAwaMVzFO83LTROVus5/f1WDAgDGa0TT99efddcL1YcCAsQ2jKTLvAX2ha3QNYcCAMY7h1ol9wufeXYaBAQPGaxluU14PlM2T9veGAQPGUIYeQN1hL2V9Pd20c1sYMGAMYugpYBag3SLWbd7BgAFjB0bT7lcA+jNZWnl5EgsDBoxBjOy4sWmx6a1/pbiFAQPGPoysWHUz0OxDhBkgDBgwBjHcIa0sKWwK5urwEgYMGCMYTX9OCbtrD0SNkA0DBoxBDP3lvmTVg3s4swYDBoyhDPdAURnIeIIdDlvAgAFjHCMb/FKKzGbAyz6WgAEDxlCGfgDQH0NmoxhG7xAGDBgbMJoUrRn8chPNDwEXBgwYoxn6oqvCa5MmwoABYwfGaV59eHXLVClNhAEDxmiGeybolq/NB7KLWBgwYIxmKD+QDYpliaCbgMKAAWMfhn6omb3lDlWEpSwMGDBgCJtwE76s8WfHexgwYGzGcEOh0kpbsAIMGDA2YOhhVEkZs0QwexIGDBg7MPTSsRmb0I8km48IAwaMcYwf/Ri8KuEiPiEAAAAASUVORK5CYII=" alt="微信分享二维码">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACv0lEQVR42u3aQW4jMQwEwPz/07tATgtsPOkmJSeHmpNhjG3VBJCYJj8+4uvP5/X8fnLP852vvvPf6+PGhYeHhzda+qvr/3uev+H5/vye/LPfPAI8PDy8a7x8g95s8e2jefUN+SGEh4eH97O85+MkWXq9ra/Ldzw8PLzfwEtCgefPtsU0Hh4e3u/kJWFES90cDMkaDmcteHh4eJOqdbjRv//1xf4eHh4e3qKrPttwZxt0XqYXq8XDw8O7wMsbTpuCOCmU94NWxX8MeHh4eAteXsjOxrCSd9o4o4gt8PDw8C7w9ht9jpmNIOTDBN8cD3h4eHiHeO2oUxLvzh5QXl4Xgwt4eHh4F3hJxPDMWI1DlXHtKizGw8PDO8R7XlYeN+RB8PM7+Xqi78HDw8N7Iy8veWcPIg9k20MFDw8P7zYvD17zIacZftMwS/4weHh4eKd4m6W0xfHmGDhw7uHh4eEdrTnbFld7kMyK7FmTDA8PD+82rx05bQPWTbncDg18cSceHh7eBd5s6cO0oyyIZ+NWdeKCh4eHV/Jmram2aN4MIrQNuS/OPTw8PLyjvDaMmIW5SZHdtuKKowsPDw/vKC8fLd0Ery11hi9Kajw8PLwFrx0X2C8iH9WaleN4eHh4t3n5WMDzgmYtsbbUriMPPDw8vAu8G5t4EknMHsHwCMHDw8M7ypstPW/5z46Q2ahWNFOGh4eHd5TXltGb9timfM8PGzw8PLwbvFNb/6nG1YElbi48PDy80XI3BW4eSeRh7iwCfnnu4eHh4a15m1bTbOxgdn/yGg8PD++dvHbLnjW3ZkNdeWPsm/4eHh4e3gVeUhAnDa22MdYGwfUBhoeHh/ejvDxcaNtgZ3NaPDw8vN/Jmz2CTVw7HB3Aw8PDu8abhRGntvt8tCv5FTw8PLzbvNnPz6KENq7Nj67VhYeHh5fy/gIYgCC1LXSSlAAAAABJRU5ErkJggg==" alt="微信分享二维码">
 </div>
 
 

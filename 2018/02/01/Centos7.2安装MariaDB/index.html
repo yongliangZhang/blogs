@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Centos7.2安装MariaDB | YoungLiang | 生活充满乐趣与童真</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="">
+    <meta name="description" content="1.检查是否已经具有MariaDB相关安装，并删除已有安装12[root@hadoop01 home]# rpm -qa|grep mariadb  #查询已安装包mariadb-libs-5.5.52-1.el7.x86_64 12[root@hadoop01 home]# rpm -e --nodeps mariadb-*   # 移除已安装包错误：未安装软件包 mariadb-* 12345">
+<meta name="keywords" content="程序猿、跳舞爱好者、读书">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Centos7.2安装MariaDB">
+<meta property="og:url" content="https://yongliangzhang.github.io/blogs/2018/02/01/Centos7.2安装MariaDB/index.html">
+<meta property="og:site_name" content="YoungLiang">
+<meta property="og:description" content="1.检查是否已经具有MariaDB相关安装，并删除已有安装12[root@hadoop01 home]# rpm -qa|grep mariadb  #查询已安装包mariadb-libs-5.5.52-1.el7.x86_64 12[root@hadoop01 home]# rpm -e --nodeps mariadb-*   # 移除已安装包错误：未安装软件包 mariadb-* 12345">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-02-01T06:00:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Centos7.2安装MariaDB">
+<meta name="twitter:description" content="1.检查是否已经具有MariaDB相关安装，并删除已有安装12[root@hadoop01 home]# rpm -qa|grep mariadb  #查询已安装包mariadb-libs-5.5.52-1.el7.x86_64 12[root@hadoop01 home]# rpm -e --nodeps mariadb-*   # 移除已安装包错误：未安装软件包 mariadb-* 12345">
+    
+        <link rel="alternate" type="application/atom+xml" title="YoungLiang" href="/blogs/atom.xml">
+    
+    <link rel="shortcut icon" href="/blogs/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/blogs/img/brand.jpg)">
+      <div class="brand">
+        <a href="/blogs/" class="avatar waves-effect waves-circle waves-light">
+          <img src="https://s1.ax2x.com/2018/01/31/ZL8UG.png">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">YoungLiang</h5>
+          <a href="mailto:zhangyongliang1231@163.com" title="zhangyongliang1231@163.com" class="mail">zhangyongliang1231@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                历程
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/yongliangZhang" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://www.jianshu.com/u/31c3a36c409d" target="_blank" >
+                <i class="icon icon-lg icon-book"></i>
+                简书
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Centos7.2安装MariaDB</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Centos7.2安装MariaDB</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-02-01T06:01:37.203Z" itemprop="datePublished" class="page-time">
+  2018-02-01
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#1-检查是否已经具有MariaDB相关安装，并删除已有安装"><span class="post-toc-number">1.</span> <span class="post-toc-text">1.检查是否已经具有MariaDB相关安装，并删除已有安装</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#2-增加MariaDB的仓库源"><span class="post-toc-number">2.</span> <span class="post-toc-text">2.增加MariaDB的仓库源</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#3-安装MariaDB"><span class="post-toc-number">3.</span> <span class="post-toc-text">3.安装MariaDB</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#4-MariaDB服务管理"><span class="post-toc-number">4.</span> <span class="post-toc-text">4.MariaDB服务管理</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#5-数据库登录"><span class="post-toc-number">5.</span> <span class="post-toc-text">5.数据库登录</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#6-设置数据库密码"><span class="post-toc-number">6.</span> <span class="post-toc-text">6.设置数据库密码</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#测试登录"><span class="post-toc-number">6.1.</span> <span class="post-toc-text">测试登录</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#7-配置MariaDB数据库字符集"><span class="post-toc-number">7.</span> <span class="post-toc-text">7.配置MariaDB数据库字符集</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-在server-cnf-文件在-mysqld-标签下增加以下信息："><span class="post-toc-number">7.0.1.</span> <span class="post-toc-text">(1).在server.cnf 文件在[mysqld]标签下增加以下信息：</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-在mysql-clients-cnf-文件-mysql-标签下增加如下信息："><span class="post-toc-number">7.0.2.</span> <span class="post-toc-text">(2).在mysql-clients.cnf 文件[mysql]标签下增加如下信息：</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#8-创建用户、添加授权"><span class="post-toc-number">8.</span> <span class="post-toc-text">8.创建用户、添加授权</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-创建用户"><span class="post-toc-number">8.0.1.</span> <span class="post-toc-text">(1).创建用户</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-为用户进行操作授权"><span class="post-toc-number">8.0.2.</span> <span class="post-toc-text">(2).为用户进行操作授权</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-授权外网登录权限"><span class="post-toc-number">8.0.3.</span> <span class="post-toc-text">(3).授权外网登录权限</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Centos7.2安装MariaDB"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Centos7.2安装MariaDB</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-02-01 14:01:37" datetime="2018-02-01T06:01:37.203Z"  itemprop="datePublished">2018-02-01</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="1-检查是否已经具有MariaDB相关安装，并删除已有安装"><a href="#1-检查是否已经具有MariaDB相关安装，并删除已有安装" class="headerlink" title="1.检查是否已经具有MariaDB相关安装，并删除已有安装"></a>1.检查是否已经具有MariaDB相关安装，并删除已有安装</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 home]# rpm -qa|grep mariadb  #查询已安装包</span><br><span class="line">mariadb-libs-5.5.52-1.el7.x86_64</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 home]# rpm -e --nodeps mariadb-*   # 移除已安装包</span><br><span class="line">错误：未安装软件包 mariadb-*</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 home]# yum remove mysql mysql-server mysql-libs compat-mysql51   # 删除Mysql服务</span><br><span class="line">已加载插件：fastestmirror, langpacks</span><br><span class="line">参数 mysql 没有匹配</span><br><span class="line">参数 mysql-server 没有匹配</span><br><span class="line">参数 compat-mysql51 没有匹配</span><br><span class="line">正在解决依赖关系</span><br><span class="line">--&gt; 正在检查事务</span><br><span class="line">---&gt; 软件包 mariadb-libs.x86_64.1.5.5.52-1.el7 将被 删除</span><br><span class="line">--&gt; 正在处理依赖关系 libmysqlclient.so.18()(64bit)，它被软件包 2:postfix-2.10.1-6.el7.x86_64 需要</span><br><span class="line">--&gt; 正在处理依赖关系 libmysqlclient.so.18(libmysqlclient_18)(64bit)，它被软件包 2:postfix-2.10.1-6.el7.x86_64 需要</span><br><span class="line">--&gt; 正在检查事务</span><br><span class="line">---&gt; 软件包 postfix.x86_64.2.2.10.1-6.el7 将被 删除</span><br><span class="line">  &gt; 解决依赖关系完成</span><br><span class="line">▽ase/7/x86_64                                                                                                                                                                                                        | 3.6 kB  00:00:00     </span><br><span class="line">extras/7/x86_64                                                                                                                                                                                                      | 3.4 kB  00:00:00     </span><br><span class="line">updates/7/x86_64                                                                                                                                                                                                     | 3.4 kB  00:00:00     </span><br><span class="line"></span><br><span class="line">依赖关系解决</span><br><span class="line"></span><br><span class="line">============================================================================================================================================================================================================================================</span><br><span class="line"> Package                                                    架构                                                 版本                                                         源                                                       大小</span><br><span class="line">============================================================================================================================================================================================================================================</span><br><span class="line">正在删除:</span><br><span class="line"> mariadb-libs                                               x86_64                                               1:5.5.52-1.el7                                               @anaconda                                               4.4 M</span><br><span class="line">为依赖而移除:</span><br><span class="line"> postfix                                                    x86_64                                               2:2.10.1-6.el7                                               @anaconda                                                12 M</span><br><span class="line"></span><br><span class="line">事务概要</span><br><span class="line">============================================================================================================================================================================================================================================</span><br><span class="line">移除  1 软件包 (+1 依赖软件包)</span><br><span class="line"></span><br><span class="line">安装大小：17 M</span><br><span class="line">是否继续？[y/N]：y</span><br><span class="line">Downloading packages:</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  正在删除    : 2:postfix-2.10.1-6.el7.x86_64                                                                                                                                                                                           1/2 </span><br><span class="line">  正在删除    : 1:mariadb-libs-5.5.52-1.el7.x86_64                                                                                                                                                                                      2/2 </span><br><span class="line">  验证中      : 2:postfix-2.10.1-6.el7.x86_64                                                                                                                                                                                           1/2 </span><br><span class="line">  验证中      : 1:mariadb-libs-5.5.52-1.el7.x86_64                                                                                                                                                                                      2/2 </span><br><span class="line"></span><br><span class="line">删除:</span><br><span class="line">  mariadb-libs.x86_64 1:5.5.52-1.el7                                                                                                                                                                                                        </span><br><span class="line"></span><br><span class="line">作为依赖被删除:</span><br><span class="line">  postfix.x86_64 2:2.10.1-6.el7                                                                                                                                                                                                             </span><br><span class="line"></span><br><span class="line">完毕！</span><br></pre></td></tr></table></figure>
+<h1 id="2-增加MariaDB的仓库源"><a href="#2-增加MariaDB的仓库源" class="headerlink" title="2.增加MariaDB的仓库源"></a>2.增加MariaDB的仓库源</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 home]#vi /etc/yum.repos.d/MariaDB.repo   增加MariaDB的数据库镜像信息</span><br><span class="line"># MariaDB 10.2 CentOS repository list - created 2017-12-26 06:46 UTC</span><br><span class="line"># http://downloads.mariadb.org/mariadb/repositories/</span><br><span class="line">[mariadb]</span><br><span class="line">name = MariaDB</span><br><span class="line">baseurl = http://yum.mariadb.org/10.2/centos7-amd64</span><br><span class="line">gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB</span><br><span class="line">gpgcheck=1</span><br></pre></td></tr></table></figure>
+<p>文件信息请参考[<a href="https://downloads.mariadb.org/mariadb/repositories/#mirror=tuna" target="_blank" rel="noopener">https://downloads.mariadb.org/mariadb/repositories/#mirror=tuna</a>] 设置具体需要安装的版本，本文下载MariaDB10.2稳定版。</p>
+<h1 id="3-安装MariaDB"><a href="#3-安装MariaDB" class="headerlink" title="3.安装MariaDB"></a>3.安装MariaDB</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# yum -y install MariaDB-server MariaDB-client</span><br><span class="line">已加载插件：fastestmirror, langpacks</span><br><span class="line">mariadb                                                                                                                                                                                                              | 2.9 kB  00:00:00     </span><br><span class="line">mariadb/primary_db                                                                                                                                                                                                   |  21 kB  00:00:01     </span><br><span class="line">Loading mirror speeds from cached hostfile</span><br><span class="line"> * base: mirrors.aliyun.com</span><br><span class="line"> * extras: mirrors.sohu.com</span><br><span class="line"> * updates: mirrors.aliyun.com</span><br><span class="line">正在解决依赖关系</span><br><span class="line">--&gt; 正在检查事务</span><br><span class="line">---&gt; 软件包 MariaDB-client.x86_64.0.10.2.11-1.el7.centos 将被 安装</span><br><span class="line">--&gt; 正在处理依赖关系 MariaDB-common，它被软件包 MariaDB-client-10.2.11-1.el7.centos.x86_64 需要</span><br><span class="line">---&gt; 软件包 MariaDB-server.x86_64.0.10.2.11-1.el7.centos 将被 安装</span><br><span class="line">--&gt; 正在处理依赖关系 perl(DBI)，它被软件包 MariaDB-server-10.2.11-1.el7.centos.x86_64 需要</span><br><span class="line">--&gt; 正在处理依赖关系 galera，它被软件包 MariaDB-server-10.2.11-1.el7.centos.x86_64 需要</span><br><span class="line">--&gt; 正在检查事务</span><br><span class="line">---&gt; 软件包 MariaDB-common.x86_64.0.10.2.11-1.el7.centos 将被 安装</span><br><span class="line">--&gt; 正在处理依赖关系 MariaDB-compat，它被软件包 MariaDB-common-10.2.11-1.el7.centos.x86_64 需要</span><br><span class="line">---&gt; 软件包 galera.x86_64.0.25.3.22-1.rhel7.el7.centos 将被 安装</span><br><span class="line">--&gt; 正在处理依赖关系 libboost_program_options.so.1.53.0()(64bit)，它被软件包 galera-25.3.22-1.rhel7.el7.centos.x86_64 需要</span><br><span class="line">---&gt; 软件包 perl-DBI.x86_64.0.1.627-4.el7 将被 安装</span><br><span class="line">--&gt; 正在处理依赖关系 perl(RPC::PlServer) &gt;= 0.2001，它被软件包 perl-DBI-1.627-4.el7.x86_64 需要</span><br><span class="line">--&gt; 正在处理依赖关系 perl(RPC::PlClient) &gt;= 0.2000，它被软件包 perl-DBI-1.627-4.el7.x86_64 需要</span><br><span class="line">--&gt; 正在检查事务</span><br><span class="line">---&gt; 软件包 MariaDB-compat.x86_64.0.10.2.11-1.el7.centos 将被 安装</span><br><span class="line">---&gt; 软件包 boost-program-options.x86_64.0.1.53.0-27.el7 将被 安装</span><br><span class="line">---&gt; 软件包 perl-PlRPC.noarch.0.0.2020-14.el7 将被 安装</span><br><span class="line">--&gt; 正在处理依赖关系 perl(Net::Daemon) &gt;= 0.13，它被软件包 perl-PlRPC-0.2020-14.el7.noarch 需要</span><br><span class="line">--&gt; 正在处理依赖关系 perl(Net::Daemon::Test)，它被软件包 perl-PlRPC-0.2020-14.el7.noarch 需要</span><br><span class="line">--&gt; 正在处理依赖关系 perl(Net::Daemon::Log)，它被软件包 perl-PlRPC-0.2020-14.el7.noarch 需要</span><br><span class="line">--&gt; 正在处理依赖关系 perl(Compress::Zlib)，它被软件包 perl-PlRPC-0.2020-14.el7.noarch 需要</span><br><span class="line">--&gt; 正在检查事务</span><br><span class="line">---&gt; 软件包 perl-IO-Compress.noarch.0.2.061-2.el7 将被 安装</span><br><span class="line">--&gt; 正在处理依赖关系 perl(Compress::Raw::Zlib) &gt;= 2.061，它被软件包 perl-IO-Compress-2.061-2.el7.noarch 需要</span><br><span class="line">--&gt; 正在处理依赖关系 perl(Compress::Raw::Bzip2) &gt;= 2.061，它被软件包 perl-IO-Compress-2.061-2.el7.noarch 需要</span><br><span class="line">---&gt; 软件包 perl-Net-Daemon.noarch.0.0.48-5.el7 将被 安装</span><br><span class="line">--&gt; 正在检查事务</span><br><span class="line">---&gt; 软件包 perl-Compress-Raw-Bzip2.x86_64.0.2.061-3.el7 将被 安装</span><br><span class="line">---&gt; 软件包 perl-Compress-Raw-Zlib.x86_64.1.2.061-4.el7 将被 安装</span><br><span class="line">--&gt; 解决依赖关系完成</span><br><span class="line"></span><br><span class="line">依赖关系解决</span><br><span class="line"></span><br><span class="line">============================================================================================================================================================================================================================================</span><br><span class="line"> Package                                                         架构                                           版本                                                                  源                                               大小</span><br><span class="line">============================================================================================================================================================================================================================================</span><br><span class="line">正在安装:</span><br><span class="line"> MariaDB-client                                                  x86_64                                         10.2.11-1.el7.centos                                                  mariadb                                          48 M</span><br><span class="line"> MariaDB-server                                                  x86_64                                         10.2.11-1.el7.centos                                                  mariadb                                         110 M</span><br><span class="line">为依赖而安装:</span><br><span class="line"> MariaDB-common                                                  x86_64                                         10.2.11-1.el7.centos                                                  mariadb                                         154 k</span><br><span class="line"> MariaDB-compat                                                  x86_64                                         10.2.11-1.el7.centos                                                  mariadb                                         2.8 M</span><br><span class="line"> boost-program-options                                           x86_64                                         1.53.0-27.el7                                                         base                                            156 k</span><br><span class="line"> galera                                                          x86_64                                         25.3.22-1.rhel7.el7.centos                                            mariadb                                         8.0 M</span><br><span class="line"> perl-Compress-Raw-Bzip2                                         x86_64                                         2.061-3.el7                                                           base                                             32 k</span><br><span class="line"> perl-Compress-Raw-Zlib                                          x86_64                                         1:2.061-4.el7                                                         base                                             57 k</span><br><span class="line"> perl-DBI                                                        x86_64                                         1.627-4.el7                                                           base                                            802 k</span><br><span class="line"> perl-IO-Compress                                                noarch                                         2.061-2.el7                                                           base                                            260 k</span><br><span class="line"> perl-Net-Daemon                                                 noarch                                         0.48-5.el7                                                            base                                             51 k</span><br><span class="line"> perl-PlRPC                                                      noarch                                         0.2020-14.el7                                                         base                                             36 k</span><br><span class="line"></span><br><span class="line">事务概要</span><br><span class="line">============================================================================================================================================================================================================================================</span><br></pre></td></tr></table></figure>
+<p>等待下载完成,下载完成后会自动安装。</p>
+<h1 id="4-MariaDB服务管理"><a href="#4-MariaDB服务管理" class="headerlink" title="4.MariaDB服务管理"></a>4.MariaDB服务管理</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 home]# systemctl start mariadb               # 开启数据库服务</span><br><span class="line">[root@hadoop01 home]# systemctl enable mariadb              # 开机自启动</span><br><span class="line">[root@hadoop01 home]# systemctl restart mariadb             # 重启服务      </span><br><span class="line">[root@hadoop01 home]# systemctl status mariadb              #查看数据库状态</span><br><span class="line">[root@hadoop01 home]# systemctl stop mariadb.service        # 停止数据库服务</span><br></pre></td></tr></table></figure>
+<h1 id="5-数据库登录"><a href="#5-数据库登录" class="headerlink" title="5.数据库登录"></a>5.数据库登录</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 home]# mysql -uroot</span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection id is 8</span><br><span class="line">Server version: 10.2.11-MariaDB MariaDB Server</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2017, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type &apos;help;&apos; or &apos;\h&apos; for help. Type &apos;\c&apos; to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="6-设置数据库密码"><a href="#6-设置数据库密码" class="headerlink" title="6.设置数据库密码"></a>6.设置数据库密码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 home]# mysql_secure_installation    #初始化密码</span><br><span class="line"></span><br><span class="line">NOTE: RUNNING ALL PARTS OF THIS SCRIPT IS RECOMMENDED FOR ALL MariaDB</span><br><span class="line">      SERVERS IN PRODUCTION USE!  PLEASE READ EACH STEP CAREFULLY!</span><br><span class="line"></span><br><span class="line">In order to log into MariaDB to secure it, we&apos;ll need the current</span><br><span class="line">password for the root user.  If you&apos;ve just installed MariaDB, and</span><br><span class="line">you haven&apos;t set the root password yet, the password will be blank,</span><br><span class="line">so you should just press enter here.</span><br><span class="line"></span><br><span class="line">Enter current password for root (enter for none):    #输入当前密码，一般没设置直接回车</span><br><span class="line">ERROR 1045 (28000): Access denied for user &apos;root&apos;@&apos;localhost&apos; (using password: YES)</span><br><span class="line">Enter current password for root (enter for none): </span><br><span class="line">OK, successfully used password, moving on...</span><br><span class="line"></span><br><span class="line">Setting the root password ensures that nobody can log into the MariaDB</span><br><span class="line">root user without the proper authorisation.</span><br><span class="line"></span><br><span class="line">Set root password? [Y/n] y           #是否设置root密码，输入y</span><br><span class="line">New password:                            #输入新密码</span><br><span class="line">Re-enter new password:             #重复密码   </span><br><span class="line">Password updated successfully!</span><br><span class="line">Reloading privilege tables..</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">By default, a MariaDB installation has an anonymous user, allowing anyone</span><br><span class="line">to log into MariaDB without having to have a user account created for</span><br><span class="line">them.  This is intended only for testing, and to make the installation</span><br><span class="line">go a bit smoother.  You should remove them before moving into a</span><br><span class="line">production environment.</span><br><span class="line"></span><br><span class="line">Remove anonymous users? [Y/n]            #删除匿名用户  y</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line">Normally, root should only be allowed to connect from &apos;localhost&apos;.  This</span><br><span class="line">ensures that someone cannot guess at the root password from the network.</span><br><span class="line"></span><br><span class="line">Disallow root login remotely? [Y/n]        #禁止root远程登录</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line">By default, MariaDB comes with a database named &apos;test&apos; that anyone can</span><br><span class="line">access.  This is also intended only for testing, and should be removed</span><br><span class="line">before moving into a production environment.</span><br><span class="line"></span><br><span class="line">Remove test database and access to it? [Y/n]     #是否删除test数据库</span><br><span class="line"> - Dropping test database...</span><br><span class="line"> ... Success!</span><br><span class="line"> - Removing privileges on test database...</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line">Reloading the privilege tables will ensure that all changes made so far</span><br><span class="line">will take effect immediately.</span><br><span class="line"></span><br><span class="line">Reload privilege tables now? [Y/n]        #是否重新加载权限表</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line">Cleaning up...</span><br><span class="line"></span><br><span class="line">All done!  If you&apos;ve completed all of the above steps, your MariaDB</span><br><span class="line">installation should now be secure.</span><br><span class="line"></span><br><span class="line">Thanks for using MariaDB!</span><br></pre></td></tr></table></figure>
+<h2 id="测试登录"><a href="#测试登录" class="headerlink" title="测试登录"></a>测试登录</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 home]# mysql -uroot -p</span><br><span class="line">Enter password: </span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection id is 22</span><br><span class="line">Server version: 10.2.11-MariaDB MariaDB Server</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2017, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type &apos;help;&apos; or &apos;\h&apos; for help. Type &apos;\c&apos; to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="7-配置MariaDB数据库字符集"><a href="#7-配置MariaDB数据库字符集" class="headerlink" title="7.配置MariaDB数据库字符集"></a>7.配置MariaDB数据库字符集</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 home]# cd /etc/my.cnf.d/</span><br><span class="line">[root@hadoop01 my.cnf.d]# ls</span><br><span class="line">enable_encryption.preset  mysql-clients.cnf  server.cnf</span><br><span class="line">[root@hadoop01 my.cnf.d]# vim server.cnf</span><br></pre></td></tr></table></figure>
+<h3 id="1-在server-cnf-文件在-mysqld-标签下增加以下信息："><a href="#1-在server-cnf-文件在-mysqld-标签下增加以下信息：" class="headerlink" title="(1).在server.cnf 文件在[mysqld]标签下增加以下信息："></a>(1).在server.cnf 文件在[mysqld]标签下增加以下信息：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">init_connect=&apos;SET collation_connection = utf8_unicode_ci&apos; </span><br><span class="line">init_connect=&apos;SET NAMES utf8&apos; </span><br><span class="line">character-set-server=utf8 </span><br><span class="line">collation-server=utf8_unicode_ci </span><br><span class="line">skip-character-set-client-handshake</span><br></pre></td></tr></table></figure>
+<h3 id="2-在mysql-clients-cnf-文件-mysql-标签下增加如下信息："><a href="#2-在mysql-clients-cnf-文件-mysql-标签下增加如下信息：" class="headerlink" title="(2).在mysql-clients.cnf 文件[mysql]标签下增加如下信息："></a>(2).在mysql-clients.cnf 文件[mysql]标签下增加如下信息：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">default-character-set=utf8</span><br></pre></td></tr></table></figure>
+<p>全部配置完成后重启数据库服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 my.cnf.d]# systemctl restart mariadb</span><br></pre></td></tr></table></figure></p>
+<p>之后进入MariaDB查看字符集<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 my.cnf.d]# systemctl restart mariadb</span><br><span class="line">[root@hadoop01 my.cnf.d]# mysql -uroot -p</span><br><span class="line">Enter password: </span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection id is 9</span><br><span class="line">Server version: 10.2.11-MariaDB MariaDB Server</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2017, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type &apos;help;&apos; or &apos;\h&apos; for help. Type &apos;\c&apos; to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; show variables like &quot;%character%&quot;;show variables like &quot;%collation%&quot;;</span><br><span class="line">+--------------------------+----------------------------+</span><br><span class="line">| Variable_name            | Value                      |</span><br><span class="line">+--------------------------+----------------------------+</span><br><span class="line">| character_set_client     | utf8                       |</span><br><span class="line">| character_set_connection | utf8                       |</span><br><span class="line">| character_set_database   | utf8                       |</span><br><span class="line">| character_set_filesystem | binary                     |</span><br><span class="line">| character_set_results    | utf8                       |</span><br><span class="line">| character_set_server     | utf8                       |</span><br><span class="line">| character_set_system     | utf8                       |</span><br><span class="line">| character_sets_dir       | /usr/share/mysql/charsets/ |</span><br><span class="line">+--------------------------+----------------------------+</span><br><span class="line">8 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">+----------------------+-----------------+</span><br><span class="line">| Variable_name        | Value           |</span><br><span class="line">+----------------------+-----------------+</span><br><span class="line">| collation_connection | utf8_unicode_ci |</span><br><span class="line">| collation_database   | utf8_unicode_ci |</span><br><span class="line">| collation_server     | utf8_unicode_ci |</span><br><span class="line">+----------------------+-----------------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt;</span><br></pre></td></tr></table></figure></p>
+<p>字符集配置完成</p>
+<h1 id="8-创建用户、添加授权"><a href="#8-创建用户、添加授权" class="headerlink" title="8.创建用户、添加授权"></a>8.创建用户、添加授权</h1><h3 id="1-创建用户"><a href="#1-创建用户" class="headerlink" title="(1).创建用户"></a>(1).创建用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; create user  hadoop@localhost identified by &apos;xxxx&apos;;  #请替换xx为密码</span><br><span class="line">Query OK, 0 rows affected (0.01 sec)</span><br></pre></td></tr></table></figure>
+<h3 id="2-为用户进行操作授权"><a href="#2-为用户进行操作授权" class="headerlink" title="(2).为用户进行操作授权"></a>(2).为用户进行操作授权</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; grant all on *.* to hadoop@locahost identified by &apos;xxxx&apos;;  #请替换xx为密码</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br></pre></td></tr></table></figure>
+<h3 id="3-授权外网登录权限"><a href="#3-授权外网登录权限" class="headerlink" title="(3).授权外网登录权限"></a>(3).授权外网登录权限</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; grant all privileges on *.* to hadoop@&apos;%&apos; identified by &apos;xxx&apos;; #请替换xx为密码</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br></pre></td></tr></table></figure>
+<p>查询用户授权结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [mysql]&gt; select host,user,password from user;</span><br><span class="line">+-----------+--------+-------------------------------------------+</span><br><span class="line">| host      | user   | password                                  |</span><br><span class="line">+-----------+--------+-------------------------------------------+</span><br><span class="line">| localhost | root   | *7D8990305DAAE2A688433D400E6559EBDF439529 |</span><br><span class="line">| 127.0.0.1 | root   | *7D8990305DAAE2A688433D400E6559EBDF439529 |</span><br><span class="line">| ::1       | root   | *7D8990305DAAE2A688433D400E6559EBDF439529 |</span><br><span class="line">| locahost  | hadoop | *7D8990305DAAE2A688433D400E6559EBDF439529 |</span><br><span class="line">| localhost | hadoop | *AB7E9F716159ED905A3E5DA78DA0DFD516C429E1 |</span><br><span class="line">| %         | hadoop | *7D8990305DAAE2A688433D400E6559EBDF439529 |</span><br><span class="line">+-----------+--------+-------------------------------------------+</span><br><span class="line">6 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-02-01T06:00:59.000Z" itemprop="dateUpdated">2018-02-01 14:00:59</time>
+</span><br>
+
+
+        
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/blogs/2018/02/01/Centos7.2安装MariaDB/" target="_blank" rel="external">https://yongliangzhang.github.io/blogs/2018/02/01/Centos7.2安装MariaDB/</a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://yongliangzhang.github.io/blogs">
+            <img src="https://s1.ax2x.com/2018/01/31/ZL8UG.png" alt="YoungLiang">
+            YoungLiang
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://yongliangzhang.github.io/blogs/2018/02/01/Centos7.2安装MariaDB/&title=《Centos7.2安装MariaDB》 — YoungLiang&pic=https://s1.ax2x.com/2018/01/31/ZL8UG.png" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://yongliangzhang.github.io/blogs/2018/02/01/Centos7.2安装MariaDB/&title=《Centos7.2安装MariaDB》 — YoungLiang&source=用心生活！创造非凡人生" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://yongliangzhang.github.io/blogs/2018/02/01/Centos7.2安装MariaDB/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Centos7.2安装MariaDB》 — YoungLiang&url=https://yongliangzhang.github.io/blogs/2018/02/01/Centos7.2安装MariaDB/&via=https://yongliangzhang.github.io/blogs" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://yongliangzhang.github.io/blogs/2018/02/01/Centos7.2安装MariaDB/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/blogs/2018/02/01/CentOS_7.2_安装Hive和Hive学习使用札记/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">CentOS 7.2 安装Hive和Hive学习使用札记</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/blogs/2018/02/01/Mysql_操作笔记/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Mysql 操作笔记</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="https://s1.ax2x.com/2018/02/01/Zxkyd.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="https://s1.ax2x.com/2018/02/01/Zxkyd.png" data-alipay="https://s1.ax2x.com/2018/02/01/ZxllR.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/blogs/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>YoungLiang &copy; 2015 - 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://yongliangzhang.github.io/blogs/2018/02/01/Centos7.2安装MariaDB/&title=《Centos7.2安装MariaDB》 — YoungLiang&pic=https://s1.ax2x.com/2018/01/31/ZL8UG.png" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://yongliangzhang.github.io/blogs/2018/02/01/Centos7.2安装MariaDB/&title=《Centos7.2安装MariaDB》 — YoungLiang&source=用心生活！创造非凡人生" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://yongliangzhang.github.io/blogs/2018/02/01/Centos7.2安装MariaDB/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Centos7.2安装MariaDB》 — YoungLiang&url=https://yongliangzhang.github.io/blogs/2018/02/01/Centos7.2安装MariaDB/&via=https://yongliangzhang.github.io/blogs" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://yongliangzhang.github.io/blogs/2018/02/01/Centos7.2安装MariaDB/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACrUlEQVR42u3aQWrDQAwF0Nz/0u2mlELr5EsamRSeVybYybwpSFNJj0d8ffy4fn9+9czVJ7/vn39y9evHLjw8PLzB0q++LuEl2/F8U/JvS9aMh4eHt81LFvH8mUlAT8DN9eDh4eG9MS9JLclRO9kmPDw8vP/FS8J9spS8bnBrYsDDw8OLeb2wPgno+S/m7+Lh4eHdw8tD9vvcr/T38PDw8MZd9aQZlo8O9A7uvXV+vYuHh4e3wMsDbn7kzcsWedCvNtLw8PDw9njV0L/dyuqlqMt7PDw8vAXeqQZYskF52beXHi7fxcPDwzvKmy+xdz9pgxWO73h4eHg38vKyQh6mJ23+JGFEXTs8PDy8Ma/aba8ecHuFiUlSif6eeHh4eGNeNQ300ka+TYVAn2woHh4e3gIvp07KEJOjc7W8G+U9PDw8vBZvciCeh/55u+tFQsLDw8Nb4FUfzYelnhdzq4XjA0NXeHh4eId4p4oLebP/7PeU2114eHh4C7zeOFTv4JskgMkYFh4eHt42b6UqHDfDqmNVERIPDw/vRl51gCAP65NRgGoaw8PDw9vj5YF4I4Xkx+7mkRoPDw/vKK/a8p8khjkjXw8eHh7ePbxq+WC+oGprrTn4hYeHh7fAqwb9pFjQ6+BP0hIeHh7enbyk2FoN5eV9HaSEF2ViPDw8vFt4+YE1CejVNlje4oqGD/Dw8PCWecnS8yP4fOgq2ZTCkRoPDw9vzOu1rJLt6AEmQwZ/vIuHh4e3wMuvavm1Wmjobd8BGB4eHl6LlyeDvLxbLT3MRwqaPT08PDy8AW9y2K2mkGZ2am0QHh4e3vvwJuMCk6JDOSHh4eHhvQGvV4xI2v/59pVHB/Dw8PAWeNWmV2+wYNIqGyUGPDw8vKO8A//wxwtNtqm3QZv1DDw8PLzv6xM6ipKXjauTJQAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/blogs/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '就这样走啦？';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎访问YoungLiang小站';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

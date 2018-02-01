@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>CentOS磁盘空间爆满的解决办法 | YoungLiang | 生活充满乐趣与童真</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="">
+    <meta name="description" content="1.查看磁盘具体占用情况12345678910[root@localhost gsidc]# df -hTFilesystem     Type      Size  Used Avail Use% Mounted on/dev/sda3      xfs        92G   21G   72G  23% /devtmpfs       devtmpfs  7.8G     0  7.8G">
+<meta name="keywords" content="程序猿、跳舞爱好者、读书">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CentOS磁盘空间爆满的解决办法">
+<meta property="og:url" content="https://yongliangzhang.github.io/blogs/2018/02/01/CentOS磁盘空间爆满的解决办法/index.html">
+<meta property="og:site_name" content="YoungLiang">
+<meta property="og:description" content="1.查看磁盘具体占用情况12345678910[root@localhost gsidc]# df -hTFilesystem     Type      Size  Used Avail Use% Mounted on/dev/sda3      xfs        92G   21G   72G  23% /devtmpfs       devtmpfs  7.8G     0  7.8G">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-02-01T06:03:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CentOS磁盘空间爆满的解决办法">
+<meta name="twitter:description" content="1.查看磁盘具体占用情况12345678910[root@localhost gsidc]# df -hTFilesystem     Type      Size  Used Avail Use% Mounted on/dev/sda3      xfs        92G   21G   72G  23% /devtmpfs       devtmpfs  7.8G     0  7.8G">
+    
+        <link rel="alternate" type="application/atom+xml" title="YoungLiang" href="/blogs/atom.xml">
+    
+    <link rel="shortcut icon" href="/blogs/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/blogs/img/brand.jpg)">
+      <div class="brand">
+        <a href="/blogs/" class="avatar waves-effect waves-circle waves-light">
+          <img src="https://s1.ax2x.com/2018/01/31/ZL8UG.png">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">YoungLiang</h5>
+          <a href="mailto:zhangyongliang1231@163.com" title="zhangyongliang1231@163.com" class="mail">zhangyongliang1231@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                历程
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/yongliangZhang" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://www.jianshu.com/u/31c3a36c409d" target="_blank" >
+                <i class="icon icon-lg icon-book"></i>
+                简书
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">CentOS磁盘空间爆满的解决办法</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">CentOS磁盘空间爆满的解决办法</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-02-01T06:04:28.743Z" itemprop="datePublished" class="page-time">
+  2018-02-01
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#1-查看磁盘具体占用情况"><span class="post-toc-number">1.</span> <span class="post-toc-text">1.查看磁盘具体占用情况</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#2-删除具体位置磁盘占用无用文件"><span class="post-toc-number">2.</span> <span class="post-toc-text">2.删除具体位置磁盘占用无用文件</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#3-查看磁盘删除情况"><span class="post-toc-number">3.</span> <span class="post-toc-text">3. 查看磁盘删除情况</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#4-彻底释放磁盘空间"><span class="post-toc-number">4.</span> <span class="post-toc-text">4. 彻底释放磁盘空间</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-CentOS磁盘空间爆满的解决办法"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">CentOS磁盘空间爆满的解决办法</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-02-01 14:04:28" datetime="2018-02-01T06:04:28.743Z"  itemprop="datePublished">2018-02-01</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="1-查看磁盘具体占用情况"><a href="#1-查看磁盘具体占用情况" class="headerlink" title="1.查看磁盘具体占用情况"></a>1.查看磁盘具体占用情况</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost gsidc]# df -hT</span><br><span class="line">Filesystem     Type      Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/sda3      xfs        92G   21G   72G  23% /</span><br><span class="line">devtmpfs       devtmpfs  7.8G     0  7.8G   0% /dev</span><br><span class="line">tmpfs          tmpfs     7.8G     0  7.8G   0% /dev/shm</span><br><span class="line">tmpfs          tmpfs     7.8G  129M  7.7G   2% /run</span><br><span class="line">tmpfs          tmpfs     7.8G     0  7.8G   0% /sys/fs/cgroup</span><br><span class="line">/dev/sda1      xfs       197M  192M  5.0M  98% /boot</span><br><span class="line">tmpfs          tmpfs     1.6G   12K  1.6G   1% /run/user/42</span><br><span class="line">tmpfs          tmpfs     1.6G     0  1.6G   0% /run/user/1000</span><br></pre></td></tr></table></figure>
+<h1 id="2-删除具体位置磁盘占用无用文件"><a href="#2-删除具体位置磁盘占用无用文件" class="headerlink" title="2.删除具体位置磁盘占用无用文件"></a>2.删除具体位置磁盘占用无用文件</h1><h1 id="3-查看磁盘删除情况"><a href="#3-查看磁盘删除情况" class="headerlink" title="3. 查看磁盘删除情况"></a>3. 查看磁盘删除情况</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost gsidc]# lsof |grep delete</span><br></pre></td></tr></table></figure>
+<h1 id="4-彻底释放磁盘空间"><a href="#4-彻底释放磁盘空间" class="headerlink" title="4. 彻底释放磁盘空间"></a>4. 彻底释放磁盘空间</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">mysqld_sa 11317      root  cwd       DIR        8,6          0     102107 /usr/local/mysql (deleted)</span><br><span class="line">mysqld_sa 11317      root  255r      REG        8,6      13620     102182 /usr/local/mysql/bin/mysqld_safe (deleted)</span><br><span class="line">mysqld    11353     mysql  txt       REG        8,6   29382763     102138 /usr/local/mysql/bin/mysqld (deleted)</span><br><span class="line">mysqld    11353     mysql    5u      REG        8,9          0      58761 /tmp/ibpfbHsa (deleted)</span><br><span class="line">mysqld    11353     mysql    6u      REG        8,9          0      58771 /tmp/ibqoMnag (deleted)</span><br><span class="line">mysqld    11353     mysql    7u      REG        8,9          0      58772 /tmp/ibN4C4Rl (deleted)</span><br><span class="line">mysqld    11353     mysql    8u      REG        8,9          0      58781 /tmp/ibkWP8zr (deleted)</span><br><span class="line">mysqld    11353     mysql   12u      REG        8,9          0      58782 /tmp/ibnqrZsx (deleted)</span><br><span class="line">java      16961      root    1w      REG        8,3 5822263296     457562 /opt/tomcat/logs/catalina.out (deleted)</span><br><span class="line">java      16961      root    2w      REG        8,3 5822263296     457562 /opt/tomcat/logs/catalina.out (deleted)</span><br><span class="line">java      16961      root   12w      REG        8,3 5469261824     197191 /opt/tomcat/logs/catalina.2013-01-02.log (deleted)</span><br><span class="line">java      16961      root   13w      REG        8,3    2166784     197192 /opt/tomcat/logs/localhost.2013-01-02.log (deleted)</span><br><span class="line">java      16961      root   14w      REG        8,3          0     391681 /opt/tomcat/logs/manager.2013-01-02.log (deleted)</span><br><span class="line">java      16961      root   15w      REG        8,3          0     391682 /opt/tomcat/logs/host-manager.2013-01-02.log (deleted)</span><br></pre></td></tr></table></figure>
+<p>关闭删除文件进程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost /]# kill -9 16961</span><br></pre></td></tr></table></figure></p>
+<p>磁盘容量恢复</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-02-01T06:03:48.000Z" itemprop="dateUpdated">2018-02-01 14:03:48</time>
+</span><br>
+
+
+        
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/blogs/2018/02/01/CentOS磁盘空间爆满的解决办法/" target="_blank" rel="external">https://yongliangzhang.github.io/blogs/2018/02/01/CentOS磁盘空间爆满的解决办法/</a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://yongliangzhang.github.io/blogs">
+            <img src="https://s1.ax2x.com/2018/01/31/ZL8UG.png" alt="YoungLiang">
+            YoungLiang
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://yongliangzhang.github.io/blogs/2018/02/01/CentOS磁盘空间爆满的解决办法/&title=《CentOS磁盘空间爆满的解决办法》 — YoungLiang&pic=https://s1.ax2x.com/2018/01/31/ZL8UG.png" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://yongliangzhang.github.io/blogs/2018/02/01/CentOS磁盘空间爆满的解决办法/&title=《CentOS磁盘空间爆满的解决办法》 — YoungLiang&source=用心生活！创造非凡人生" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://yongliangzhang.github.io/blogs/2018/02/01/CentOS磁盘空间爆满的解决办法/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《CentOS磁盘空间爆满的解决办法》 — YoungLiang&url=https://yongliangzhang.github.io/blogs/2018/02/01/CentOS磁盘空间爆满的解决办法/&via=https://yongliangzhang.github.io/blogs" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://yongliangzhang.github.io/blogs/2018/02/01/CentOS磁盘空间爆满的解决办法/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/blogs/2018/02/01/Hadoop_MapReduce优化和资源调度器/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Hadoop MapReduce优化和资源调度器</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/blogs/2018/02/01/Keepalived+Nginx+Tomcat_实现高可用Web集群/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Keepalived+Nginx+Tomcat 实现高可用Web集群</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="https://s1.ax2x.com/2018/02/01/Zxkyd.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="https://s1.ax2x.com/2018/02/01/Zxkyd.png" data-alipay="https://s1.ax2x.com/2018/02/01/ZxllR.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/blogs/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>YoungLiang &copy; 2015 - 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://yongliangzhang.github.io/blogs/2018/02/01/CentOS磁盘空间爆满的解决办法/&title=《CentOS磁盘空间爆满的解决办法》 — YoungLiang&pic=https://s1.ax2x.com/2018/01/31/ZL8UG.png" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://yongliangzhang.github.io/blogs/2018/02/01/CentOS磁盘空间爆满的解决办法/&title=《CentOS磁盘空间爆满的解决办法》 — YoungLiang&source=用心生活！创造非凡人生" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://yongliangzhang.github.io/blogs/2018/02/01/CentOS磁盘空间爆满的解决办法/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《CentOS磁盘空间爆满的解决办法》 — YoungLiang&url=https://yongliangzhang.github.io/blogs/2018/02/01/CentOS磁盘空间爆满的解决办法/&via=https://yongliangzhang.github.io/blogs" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://yongliangzhang.github.io/blogs/2018/02/01/CentOS磁盘空间爆满的解决办法/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADL0lEQVR42u3ay67aQBAFwPv/P02krCIlwDnTRsKd8gqBYabGi6YfPz/x9fh9/fn69fX3t5LvPrvz2X5e33PBhY2NjX0TdgvIl0wOYrLP9pFgY2Nj72YnQet1aEmWf71uHvDaY8XGxsbGnoSrSbDJ18XGxsbGngSwpCSUl6LaEIiNjY2N3QaSpDCUfHdS+s/3eUEtDRsbG/vr2WeN3u98/fH+NjY2NvaXsR/ja5J45M2Ds3D1dBVsbGzsRey8BJ8EtrwUlRxi3oQ4HA/CxsbGXsE+G4JpG8PJFvNhoEkTAhsbG3sfux3QyY8jf50gJ+3hulqGjY2NfVt2HhLyEHVt0pKPByXBDxsbG3sHO0lFzspPbfHo7J6zO7GxsbE3sfNy/CTlmKQ9Z78ZrYKNjY29lD3Z7lXDN3mBqQ2iP3mFDBsbG/sm7KSYnlPz9mqe/OQPpihyYWNjYy9if2IEp8W34ziTBxBlYNjY2Ni3YrfF+naBs7bxnP0mEGJjY2MvZedzPcXf/XHCc3a4UVEJGxsbewU7KcG3YeysSXyWYOTlp+KZY2NjY9+KnfzdL8YZB2WmNgi1TeV/pCLY2NjYK9hnjdU2CF2V0rSHW+8KGxsb+4bsthzftmnn7dt2KCcKutjY2NiL2MnHeQP4LJlpi1NnwRUbGxt7K7st7uflnmtHf/LCU7Q3bGxs7EXsqwLY2QElAakNY8UOsbGxsVew25LQ2chmG8DO0o/iILCxsbHXsScBpi0b5YM4k/ffPDBsbGzs1ew2RJ0lMO12k+JRkbRgY2NjL2Ln5Zt8u3nakDCST89+DRsbG3sr+3OlnLOUJg+o+WFhY2Njb2W3gzv5AE0UM+Ng2RbCotCFjY2NvYLdXpNSVBJaLttoHr2xsbGxb8h+lNd8oGdSisoLVW8SEmxsbOxF7DYAtAnDWfCbrJUfCjY2NvYm9hmjHYtpR3Pa1kWd2GBjY2OvY581fc8KQ5NfmI9sYmNjY2Of3dk2ZedDnG8OERsbG/u/ZE/GdD4xmjlpKmBjY2PvY+cjj8k7bVg6awYnKc2bVAQbGxt7BXvS6G1/um3Q5gfahklsbGzsFexfiDtaPawUykoAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/blogs/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '就这样走啦？';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎访问YoungLiang小站';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
