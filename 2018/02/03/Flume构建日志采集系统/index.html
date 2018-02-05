@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Flume构建日志采集系统 | YoungLiang | 生活充满乐趣与童真</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="flume,kafka">
+    <meta name="description" content="一、Flume介绍1.Flume特点 Flume是一个分布式的、可靠的、高可用的海量日志采集、聚合和传输的系统 数据流模型：Source-Channel-Sink 事务机制保证消息传递的可靠性  内置丰富插件，轻松与其他系统集成 Java实现，优秀的系统框架设计，模块分明，易于开发">
+<meta name="keywords" content="flume,kafka">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flume构建日志采集系统">
+<meta property="og:url" content="https://yongliangzhang.github.io/blogs/2018/02/03/Flume构建日志采集系统/index.html">
+<meta property="og:site_name" content="YoungLiang">
+<meta property="og:description" content="一、Flume介绍1.Flume特点 Flume是一个分布式的、可靠的、高可用的海量日志采集、聚合和传输的系统 数据流模型：Source-Channel-Sink 事务机制保证消息传递的可靠性  内置丰富插件，轻松与其他系统集成 Java实现，优秀的系统框架设计，模块分明，易于开发">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1784853-4015c20dd50bef6f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1784853-1aa8fbe82b1057cd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1784853-4245413ce4b0ead7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1784853-f3c3e28c92699588.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1784853-2e86bae3b2af0531.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1784853-01c63fe5f0586cb0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1784853-782d0cca4d4aa7a7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1784853-9b701d7d5da1facc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-02-05T13:03:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flume构建日志采集系统">
+<meta name="twitter:description" content="一、Flume介绍1.Flume特点 Flume是一个分布式的、可靠的、高可用的海量日志采集、聚合和传输的系统 数据流模型：Source-Channel-Sink 事务机制保证消息传递的可靠性  内置丰富插件，轻松与其他系统集成 Java实现，优秀的系统框架设计，模块分明，易于开发">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1784853-4015c20dd50bef6f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+    
+        <link rel="alternate" type="application/atom+xml" title="YoungLiang" href="/blogs/atom.xml">
+    
+    <link rel="shortcut icon" href="/blogs/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/blogs/img/brand.jpg)">
+      <div class="brand">
+        <a href="/blogs/" class="avatar waves-effect waves-circle waves-light">
+          <img src="https://s1.ax2x.com/2018/01/31/ZL8UG.png">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">YoungLiang</h5>
+          <a href="mailto:zhangyongliang1231@163.com" title="zhangyongliang1231@163.com" class="mail">zhangyongliang1231@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                历程
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/blogs/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/yongliangZhang" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://www.jianshu.com/u/31c3a36c409d" target="_blank" >
+                <i class="icon icon-lg icon-book"></i>
+                简书
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Flume构建日志采集系统</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Flume构建日志采集系统</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-02-03T11:45:00.000Z" itemprop="datePublished" class="page-time">
+  2018-02-03
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一、Flume介绍"><span class="post-toc-number">1.</span> <span class="post-toc-text">一、Flume介绍</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-Flume特点"><span class="post-toc-number">1.0.0.0.1.</span> <span class="post-toc-text">1.Flume特点</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-Flume原型图"><span class="post-toc-number">1.0.0.1.</span> <span class="post-toc-text">2.Flume原型图</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-Flume基本组件"><span class="post-toc-number">1.0.0.2.</span> <span class="post-toc-text">3.Flume基本组件</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-Flume事件流"><span class="post-toc-number">1.0.0.3.</span> <span class="post-toc-text">3.Flume事件流</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4-Flumes数据流"><span class="post-toc-number">1.0.0.4.</span> <span class="post-toc-text">4.Flumes数据流</span></a></li></ol></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#二、Flume搭建"><span class="post-toc-number">2.</span> <span class="post-toc-text">二、Flume搭建</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-下载二进制安装包"><span class="post-toc-number">2.0.0.1.</span> <span class="post-toc-text">1.下载二进制安装包</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-安装Flume"><span class="post-toc-number">2.0.0.2.</span> <span class="post-toc-text">2.安装Flume</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-创建软连接【此步骤可省略】"><span class="post-toc-number">2.0.0.3.</span> <span class="post-toc-text">3.创建软连接【此步骤可省略】</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4-配置环境变量"><span class="post-toc-number">2.0.0.4.</span> <span class="post-toc-text">4.配置环境变量</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4-启动flume"><span class="post-toc-number">2.0.0.5.</span> <span class="post-toc-text">4.启动flume</span></a></li></ol></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#三、Flume实践"><span class="post-toc-number">3.</span> <span class="post-toc-text">三、Flume实践</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-Source组件清单"><span class="post-toc-number">3.0.0.1.</span> <span class="post-toc-text">1.Source组件清单</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-avro-Source-Agent-和Exec-Source-Agent"><span class="post-toc-number">3.0.0.2.</span> <span class="post-toc-text">2.avro Source Agent 和Exec Source Agent</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-Source组件-Spooling-Directory-Source"><span class="post-toc-number">3.0.0.3.</span> <span class="post-toc-text">3.Source组件- Spooling Directory Source</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4-Source组件-Kafka-Source"><span class="post-toc-number">3.0.0.4.</span> <span class="post-toc-text">4.Source组件- Kafka Source</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#5-Source-组件-Taildir-source"><span class="post-toc-number">3.0.0.5.</span> <span class="post-toc-text">5.Source 组件 -Taildir source</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#6-Channel组件"><span class="post-toc-number">3.0.0.6.</span> <span class="post-toc-text">6.Channel组件</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#7-Channel组件-Memory-Channel"><span class="post-toc-number">3.0.0.7.</span> <span class="post-toc-text">7.Channel组件- Memory Channel</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#8-Channel组件-File-Channel"><span class="post-toc-number">3.0.0.8.</span> <span class="post-toc-text">8. Channel组件- File Channel</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#9-Channel组件-Kafka-Channel"><span class="post-toc-number">3.0.0.9.</span> <span class="post-toc-text">9.Channel组件- Kafka Channel</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#10-Sink组件"><span class="post-toc-number">3.0.0.10.</span> <span class="post-toc-text">10.Sink组件</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#11-Sink组件-Avro-Sink"><span class="post-toc-number">3.0.0.11.</span> <span class="post-toc-text">11.Sink组件- Avro Sink</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#12-Sink组件-HDFS-Sink"><span class="post-toc-number">3.0.0.12.</span> <span class="post-toc-text">12.Sink组件- HDFS Sink</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#13-Sink组件-Kafka-Sink"><span class="post-toc-number">3.0.0.13.</span> <span class="post-toc-text">13.Sink组件- Kafka Sink</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#14-Interceptor拦截器"><span class="post-toc-number">3.0.0.14.</span> <span class="post-toc-text">14.Interceptor拦截器</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#15-Timestamp-Interceptor"><span class="post-toc-number">3.0.0.15.</span> <span class="post-toc-text">15.Timestamp Interceptor</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#16-Host-Interceptor"><span class="post-toc-number">3.0.0.16.</span> <span class="post-toc-text">16.Host Interceptor</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#17-Host-InterceptorStatic-Interceptor"><span class="post-toc-number">3.0.0.17.</span> <span class="post-toc-text">17.Host InterceptorStatic Interceptor</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#18-Selector选择器"><span class="post-toc-number">3.0.0.18.</span> <span class="post-toc-text">18.Selector选择器</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#19-Replicating-Channel-Selector"><span class="post-toc-number">3.0.0.19.</span> <span class="post-toc-text">19.Replicating Channel Selector</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#20-Multiplexing-Channel-Selector"><span class="post-toc-number">3.0.0.20.</span> <span class="post-toc-text">20.Multiplexing    Channel Selector</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#21-Sink-Processor"><span class="post-toc-number">3.0.0.21.</span> <span class="post-toc-text">21.Sink Processor</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#22-Load-Balancing-Sink-Processor"><span class="post-toc-number">3.0.0.22.</span> <span class="post-toc-text">22.Load-Balancing Sink Processor</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#23-Failover-Sink-Processor"><span class="post-toc-number">3.0.0.23.</span> <span class="post-toc-text">23.Failover Sink Processor</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#24-Failover应用场景"><span class="post-toc-number">3.0.0.24.</span> <span class="post-toc-text">24.Failover应用场景</span></a></li></ol></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Flume构建日志采集系统"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Flume构建日志采集系统</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-02-03 19:45:00" datetime="2018-02-03T11:45:00.000Z"  itemprop="datePublished">2018-02-03</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="一、Flume介绍"><a href="#一、Flume介绍" class="headerlink" title="一、Flume介绍"></a>一、Flume介绍</h1><h5 id="1-Flume特点"><a href="#1-Flume特点" class="headerlink" title="1.Flume特点"></a>1.Flume特点</h5><ul>
+<li>Flume是一个分布式的、可靠的、高可用的海量日志采集<br>、聚合和传输的系统</li>
+<li>数据流模型：Source-Channel-Sink</li>
+<li>事务机制保证消息传递的可靠性 </li>
+<li>内置丰富插件，轻松与其他系统集成</li>
+<li>Java实现，优秀的系统框架设计，模块分明，易于开发<a id="more"></a>
+<h4 id="2-Flume原型图"><a href="#2-Flume原型图" class="headerlink" title="2.Flume原型图"></a>2.Flume原型图</h4><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://upload-images.jianshu.io/upload_images/1784853-4015c20dd50bef6f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Flume原型图.png" title="">
+                </div>
+                <div class="image-caption">Flume原型图.png</div>
+            </figure>
+<h4 id="3-Flume基本组件"><a href="#3-Flume基本组件" class="headerlink" title="3.Flume基本组件"></a>3.Flume基本组件</h4></li>
+<li>Event：消息的基本单位，有header和body组成</li>
+<li>Agent：JVM进程，负责将一端外部来源产生的消息转 发到另一端外部的目的地<br><ul>
+<li>Source：从外部来源读入event，并写入channel</li>
+<li>Channel：event暂存组件，source写入后，event将会 一直保存,</li>
+<li>Sink：从channel读入event，并写入目的地<h4 id="3-Flume事件流"><a href="#3-Flume事件流" class="headerlink" title="3.Flume事件流"></a>3.Flume事件流</h4><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://upload-images.jianshu.io/upload_images/1784853-1aa8fbe82b1057cd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Flume事件流.png" title="">
+                </div>
+                <div class="image-caption">Flume事件流.png</div>
+            </figure>
+<h4 id="4-Flumes数据流"><a href="#4-Flumes数据流" class="headerlink" title="4.Flumes数据流"></a>4.Flumes数据流</h4><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://upload-images.jianshu.io/upload_images/1784853-4245413ce4b0ead7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Flume数据流.png" title="">
+                </div>
+                <div class="image-caption">Flume数据流.png</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://upload-images.jianshu.io/upload_images/1784853-f3c3e28c92699588.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Flume数据流2.png" title="">
+                </div>
+                <div class="image-caption">Flume数据流2.png</div>
+            </figure>
+<h1 id="二、Flume搭建"><a href="#二、Flume搭建" class="headerlink" title="二、Flume搭建"></a>二、Flume搭建</h1><h4 id="1-下载二进制安装包"><a href="#1-下载二进制安装包" class="headerlink" title="1.下载二进制安装包"></a>1.下载二进制安装包</h4>下载地址：<a href="http://flume.apache.org/download.html" target="_blank" rel="noopener">http://flume.apache.org/download.html</a><h4 id="2-安装Flume"><a href="#2-安装Flume" class="headerlink" title="2.安装Flume"></a>2.安装Flume</h4>解压缩安装包文件</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@hadoop01 apps]$ tar -zxvf apache-flume-1.8.0-bin.tar.gz </span><br><span class="line">[hadoop@hadoop01 apps]$ cd apache-flume-1.8.0-bin/</span><br><span class="line">[hadoop@hadoop01 apache-flume-1.8.0-bin]$ ll</span><br><span class="line">总用量 148</span><br><span class="line">drwxr-xr-x.  2 hadoop hadoop    62 1月  21 14:31 bin</span><br><span class="line">-rw-r--r--.  1 hadoop hadoop 81264 9月  15 20:26 CHANGELOG</span><br><span class="line">drwxr-xr-x.  2 hadoop hadoop   127 1月  21 14:31 conf</span><br><span class="line">-rw-r--r--.  1 hadoop hadoop  5681 9月  15 20:26 DEVNOTES</span><br><span class="line">-rw-r--r--.  1 hadoop hadoop  2873 9月  15 20:26 doap_Flume.rdf</span><br><span class="line">drwxr-xr-x. 10 hadoop hadoop  4096 9月  15 20:48 docs</span><br><span class="line">drwxr-xr-x.  2 hadoop hadoop  8192 1月  21 14:31 lib</span><br><span class="line">-rw-r--r--.  1 hadoop hadoop 27663 9月  15 20:26 LICENSE</span><br><span class="line">-rw-r--r--.  1 hadoop hadoop   249 9月  15 20:26 NOTICE</span><br><span class="line">-rw-r--r--.  1 hadoop hadoop  2483 9月  15 20:26 README.md</span><br><span class="line">-rw-r--r--.  1 hadoop hadoop  1588 9月  15 20:26 RELEASE-NOTES</span><br><span class="line">drwxr-xr-x.  2 hadoop hadoop    68 1月  21 14:31 tools</span><br><span class="line">[hadoop@hadoop01 apache-flume-1.8.0-bin]$</span><br></pre></td></tr></table></figure>
+<h4 id="3-创建软连接【此步骤可省略】"><a href="#3-创建软连接【此步骤可省略】" class="headerlink" title="3.创建软连接【此步骤可省略】"></a>3.创建软连接【此步骤可省略】</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 bin]# ln -s /home/hadoop/apps/apache-flume-1.8.0-bin /usr/local/flume</span><br></pre></td></tr></table></figure>
+<h4 id="4-配置环境变量"><a href="#4-配置环境变量" class="headerlink" title="4.配置环境变量"></a>4.配置环境变量</h4><p>编辑 /etc/profile文件，增加以下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export FLUME_HOME=/usr/local/flume</span><br><span class="line">export PATH=$PATH:$&#123;JAVA_HOME&#125;/bin:$&#123;ZOOKEEPER_HOME&#125;/bin:$&#123;HADOOP_HOME&#125;/bin:$&#123;HADOOP_HOME&#125;/sbin:$&#123;HIVE_HOME&#125;/bin:$&#123;FLUME_HOME&#125;/bin</span><br></pre></td></tr></table></figure>
+<h4 id="4-启动flume"><a href="#4-启动flume" class="headerlink" title="4.启动flume"></a>4.启动flume</h4><p>使用example.conf 配置文件启动一个实例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">a1.sources = r1</span><br><span class="line">a1.channels = c1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.sources.r1.type = netcat</span><br><span class="line">a1.sources.r1.bind = localhost</span><br><span class="line">a1.sources.r1.port = 44444</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = 1000</span><br><span class="line">a1.channels.c1.transactionCapacity = 100</span><br><span class="line">a1.sinks.k1.type = logger</span><br><span class="line">a1.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure></p>
+<p>启动命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 conf]# pwd</span><br><span class="line">/home/hadoop/apps/apache-flume-1.8.0-bin/conf</span><br><span class="line">[root@hadoop01 conf]# flume-ng agent --conf conf --conf-file  example.conf --name a1 -Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+<p>启动成功后如下图所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">........略</span><br><span class="line">18/01/27 18:17:25 INFO node.AbstractConfigurationProvider: Channel c1 connected to [r1, k1]</span><br><span class="line">18/01/27 18:17:25 INFO node.Application: Starting new configuration:&#123; sourceRunners:&#123;r1=EventDrivenSourceRunner: &#123; source:org.apache.flume.source.NetcatSource&#123;name:r1,state:IDLE&#125; &#125;&#125; sinkRunners:&#123;k1=SinkRunner: &#123; policy:org.apache.flume.sink.DefaultSinkProcessor@20470f counterGroup:&#123; name:null counters:&#123;&#125; &#125; &#125;&#125; channels:&#123;c1=org.apache.flume.channel.MemoryChannel&#123;name: c1&#125;&#125; &#125;</span><br><span class="line">18/01/27 18:17:25 INFO node.Application: Starting Channel c1</span><br><span class="line">18/01/27 18:17:25 INFO node.Application: Waiting for channel: c1 to start. Sleeping for 500 ms</span><br><span class="line">18/01/27 18:17:25 INFO instrumentation.MonitoredCounterGroup: Monitored counter group for type: CHANNEL, name: c1: Successfully registered new MBean.</span><br><span class="line">18/01/27 18:17:25 INFO instrumentation.MonitoredCounterGroup: Component type: CHANNEL, name: c1 started</span><br><span class="line">18/01/27 18:17:26 INFO node.Application: Starting Sink k1</span><br><span class="line">18/01/27 18:17:26 INFO node.Application: Starting Source r1</span><br><span class="line">18/01/27 18:17:26 INFO source.NetcatSource: Source starting</span><br><span class="line">18/01/27 18:17:26 INFO source.NetcatSource: Created serverSocket:sun.nio.ch.ServerSocketChannelImpl[/127.0.0.1:44444]</span><br></pre></td></tr></table></figure>
+<p>使用telnet发送数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 apps]# telnet localhost 44444</span><br><span class="line">Trying ::1...</span><br><span class="line">telnet: connect to address ::1: Connection refused</span><br><span class="line">Trying 127.0.0.1...</span><br><span class="line">Connected to localhost.</span><br><span class="line">Escape character is &apos;^]&apos;.</span><br><span class="line">Are you OK ?</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+<p>控制台打印如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Impl[/127.0.0.1:44444]</span><br><span class="line">18/01/27 18:21:00 INFO sink.LoggerSink: Event: &#123; headers:&#123;&#125; body: 41 72 65 20 79 6F 75 20 4F 4B 20 3F 0D          Are you OK ?. &#125;</span><br></pre></td></tr></table></figure>
+<p><strong>如无法使用telnet，请先安装telnet工具</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 apps]# yum -y install telnet</span><br></pre></td></tr></table></figure>
+<h1 id="三、Flume实践"><a href="#三、Flume实践" class="headerlink" title="三、Flume实践"></a>三、Flume实践</h1><h4 id="1-Source组件清单"><a href="#1-Source组件清单" class="headerlink" title="1.Source组件清单"></a>1.Source组件清单</h4><ul>
+<li>Source：对接各种外部数据源，将收集到的事件发送到Channel中，一个source可以向多个channel发送event，Flume内置非常丰富的Source，同时用户可以自定义Source</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Source类型</th>
+<th style="text-align:center">Type</th>
+<th style="text-align:center">用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Avro Source</td>
+<td style="text-align:center">avro</td>
+<td style="text-align:center">启动一个Avro Server，可与上一级Agent连接</td>
+</tr>
+<tr>
+<td style="text-align:center">HTTP Source</td>
+<td style="text-align:center">http</td>
+<td style="text-align:center">启动一个HttpServer</td>
+</tr>
+<tr>
+<td style="text-align:center">Exec Source</td>
+<td style="text-align:center">exec</td>
+<td style="text-align:center">执行unix command，获取标准输出，如tail -f</td>
+</tr>
+<tr>
+<td style="text-align:center">Taildir Source</td>
+<td style="text-align:center">TAILDIR</td>
+<td style="text-align:center">监听目录或文件</td>
+</tr>
+<tr>
+<td style="text-align:center">Spooling Directory Source</td>
+<td style="text-align:center">spooldir</td>
+<td style="text-align:center">监听目录下的新增文件</td>
+</tr>
+<tr>
+<td style="text-align:center">Kafka Source</td>
+<td style="text-align:center">org.apache.flume.sourc  e.kafka.KafkaSource</td>
+<td style="text-align:center">读取Kafka数据</td>
+</tr>
+<tr>
+<td style="text-align:center">JMS Source</td>
+<td style="text-align:center">jms</td>
+<td style="text-align:center">从JMS源读取数据</td>
+</tr>
+</tbody>
+</table>
+<h4 id="2-avro-Source-Agent-和Exec-Source-Agent"><a href="#2-avro-Source-Agent-和Exec-Source-Agent" class="headerlink" title="2.avro Source Agent 和Exec Source Agent"></a>2.avro Source Agent 和Exec Source Agent</h4><ul>
+<li>配置一个avroagent，avrosource.conf 配置文件如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//avrosource.conf</span><br><span class="line">avroagent.sources = r1</span><br><span class="line">avroagent.channels = c1</span><br><span class="line">avroagent.sinks = k1 </span><br><span class="line">avroagent.sources.r1.type = avro</span><br><span class="line">avroagent.sources.r1.bind = 192.168.43.20</span><br><span class="line">avroagent.sources.r1.port = 8888</span><br><span class="line">avroagent.sources.r1.threads= 3</span><br><span class="line">avroagent.sources.r1.channels = c1</span><br><span class="line">avroagent.channels.c1.type = memory</span><br><span class="line">avroagent.channels.c1.capacity = 10000 </span><br><span class="line">avroagent.channels.c1.transactionCapacity = 1000</span><br><span class="line">avroagent.sinks.k1.type = logger</span><br><span class="line">avroagent.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+<ul>
+<li>启动一个avrosource的agent<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 conf]# flume-ng agent --conf conf --conf-file avrosource.conf  --name avroagent -Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>启动成功入下图所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">...略</span><br><span class="line">18/01/27 18:46:36 INFO instrumentation.MonitoredCounterGroup: Monitored counter group for type: CHANNEL, name: c1: Successfully registered new MBean.</span><br><span class="line">18/01/27 18:46:36 INFO instrumentation.MonitoredCounterGroup: Component type: CHANNEL, name: c1 started</span><br><span class="line">18/01/27 18:46:36 INFO node.Application: Starting Sink k1</span><br><span class="line">18/01/27 18:46:36 INFO node.Application: Starting Source r1</span><br><span class="line">18/01/27 18:46:36 INFO source.AvroSource: Starting Avro source r1: &#123; bindAddress: 192.168.43.20, port: 8888 &#125;...</span><br><span class="line">18/01/27 18:46:37 INFO instrumentation.MonitoredCounterGroup: Monitored counter group for type: SOURCE, name: r1: Successfully registered new MBean.</span><br><span class="line">18/01/27 18:46:37 INFO instrumentation.MonitoredCounterGroup: Component type: SOURCE, name: r1 started</span><br><span class="line">18/01/27 18:46:37 INFO source.AvroSource: Avro source r1 started</span><br></pre></td></tr></table></figure>
+<ul>
+<li>配置一个execAgent，实现与sourceAgent实现串联，execsource.conf 配置文件如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">execagent.sources = r1 </span><br><span class="line">execagent.channels = c1</span><br><span class="line">execagent.sinks = k1</span><br><span class="line">execagent.sources.r1.type = exec </span><br><span class="line">execagent.sources.r1.command = tail -F /home/hadoop/apps/flume/execsource/exectest.log</span><br><span class="line">execagent.sources.r1.channels = c1</span><br><span class="line">execagent.channels.c1.type = memory</span><br><span class="line">execagent.channels.c1.capacity = 10000 </span><br><span class="line">execagent.channels.c1.transactionCapacity = 1000</span><br><span class="line">execagent.sinks.k1.type = avro</span><br><span class="line">execagent.sinks.k1.channel = c1</span><br><span class="line">execagent.sinks.k1.hostname = 192.168.43.20</span><br><span class="line">execagent.sinks.k1.port = 8888</span><br></pre></td></tr></table></figure>
+<ul>
+<li>启动一个execAgent,并实现execagent监控文件变化，sourceAgent接收变化内容</li>
+</ul>
+<p>启动 execAgent<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 conf]# flume-ng agent --conf conf --conf-file execsource.conf --name execagent</span><br></pre></td></tr></table></figure></p>
+<p>启动成功如下下图所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">18/01/27 18:58:43 INFO instrumentation.MonitoredCounterGroup: Component type: SINK, name: k1 started</span><br><span class="line">18/01/27 18:58:43 INFO sink.AbstractRpcSink: Rpc sink k1: Building RpcClient with hostname: 192.168.43.20, port: 8888</span><br><span class="line">18/01/27 18:58:43 INFO sink.AvroSink: Attempting to create Avro Rpc client.</span><br><span class="line">18/01/27 18:58:43 WARN api.NettyAvroRpcClient: Using default maxIOWorkers</span><br><span class="line">18/01/27 18:58:44 INFO sink.AbstractRpcSink: Rpc sink k1 started.</span><br></pre></td></tr></table></figure>
+<p>在execAgent监控的文件下写入内容，观察sourceagent是否接收到变化内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 execsource]# echo 222 &gt; exectest.log </span><br><span class="line">[root@hadoop01 execsource]# echo 5555 &gt;&gt; exectest.log </span><br><span class="line">[root@hadoop01 execsource]# cat exectest.log </span><br><span class="line">222</span><br><span class="line">5555</span><br></pre></td></tr></table></figure>
+<p>在sourceagent控制打印台下查看监控消息如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">18/01/27 18:58:50 INFO sink.LoggerSink: Event: &#123; headers:&#123;&#125; body: 31 32 33                                        123 &#125;</span><br><span class="line">18/01/27 18:59:55 INFO sink.LoggerSink: Event: &#123; headers:&#123;&#125; body: 35 35 35 35                                     5555 &#125;</span><br></pre></td></tr></table></figure>
+<p>则说明2个串联agent传递信息成功。<br><br><strong>说明:</strong><br>avroagent 配置文件配置项起始名称需要与服务启动 -name 名称相一致。</p>
+<h4 id="3-Source组件-Spooling-Directory-Source"><a href="#3-Source组件-Spooling-Directory-Source" class="headerlink" title="3.Source组件- Spooling Directory Source"></a>3.Source组件- Spooling Directory Source</h4><ul>
+<li>配置一个Spooling Directory Source ,spooldirsource.conf 配置文件内容如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">a1.sources = r1</span><br><span class="line">a1.channels = c1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.sources.r1.type = spooldir</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sources.r1.spoolDir = /home/hadoop/apps/flume/spoolDir</span><br><span class="line">a1.sources.r1.fileHeader = true</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = 10000</span><br><span class="line">a1.channels.c1.transactionCapacity = 1000</span><br><span class="line">a1.sinks.k1.type = logger</span><br><span class="line">a1.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+<p>/home/hadoop/apps/flume/spoolDir 必须已经创建且具有用户读写权限。</p>
+<p>启动 SpoolDirsourceAgent</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@hadoop01 conf]$ flume-ng agent --conf conf --conf-file spooldirsource.conf  --name a1 -Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+<p>在spoolDir文件夹下创建文件并写入文件内容，观察控制台消息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">18/01/28 17:06:54 INFO avro.ReliableSpoolingFileEventReader: Preparing to move file /home/hadoop/apps/flume/spoolDir/test to /home/hadoop/apps/flume/spoolDir/test.COMPLETED</span><br><span class="line">18/01/28 17:06:55 INFO sink.LoggerSink: Event: &#123; headers:&#123;file=/home/hadoop/apps/flume/spoolDir/test&#125; body: 32 32 32                                        222 &#125;</span><br></pre></td></tr></table></figure>
+<p>此时监测到SpoolDirSourceAgent 可以监控到文件变化。<br><br>值得说明的是：<strong>Spooling Directory Source Agent 并不能监听子级文件夹的文件变化,也不支持已存在的文件更新数据变化</strong>.</p>
+<h4 id="4-Source组件-Kafka-Source"><a href="#4-Source组件-Kafka-Source" class="headerlink" title="4.Source组件- Kafka Source"></a>4.Source组件- Kafka Source</h4><ul>
+<li>配置一个Kafa Source , kafasource.conf 配置文件内容如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">kafkasourceagent.sources = r1</span><br><span class="line">kafkasourceagent.channels = c1</span><br><span class="line">kafkasourceagent.sinks = k1</span><br><span class="line">kafkasourceagent.sources.r1.type = org.apache.flume.source.kafka.KafkaSource </span><br><span class="line">kafkasourceagent.sources.r1.channels = c1 </span><br><span class="line">kafkasourceagent.sources.r1.batchSize = 100</span><br><span class="line">kafkasourceagent.sources.r1.batchDurationMillis = 1000</span><br><span class="line">kafkasourceagent.sources.r1.kafka.bootstrap.servers = 192.168.43.22:9092,192.168.43.23:9092,192.168.43.24:9092</span><br><span class="line">kafkasourceagent.sources.r1.kafka.topics = flumetopictest1</span><br><span class="line">kafkasourceagent.sources.r1.kafka.consumer.group.id = flumekafkagroupid</span><br><span class="line">kafkasourceagent.channels.c1.type = memory</span><br><span class="line">kafkasourceagent.channels.c1.capacity = 10000 </span><br><span class="line">kafkasourceagent.channels.c1.transactionCapacity = 1000</span><br><span class="line">kafkasourceagent.sinks.k1.type = logger</span><br><span class="line">kafkasourceagent.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+<p>首先启动3个节点的kafka节点服务，在每个kafka节点执行，以后台方式运行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop03 bin]# ./kafka-server-start.sh -daemon ../config/server.properties</span><br></pre></td></tr></table></figure>
+<p>在kafka节点上创建一个配置好的Topic flumetoptest1,命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop03 bin]# ./kafka-topics.sh --create --zookeeper 192.168.43.20:2181 --replication-factor 1 --partitions 3 --topic flumetopictest1</span><br><span class="line">Created topic &quot;flumetopictest1&quot;.</span><br></pre></td></tr></table></figure>
+<p>创建成功后，启动一个kafka Source Agent，命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 conf]# flume-ng  agent --conf conf --conf-file kafkasource.conf --name kafkasourceagent -Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+<p>创建一个Kafka 生产者，进行消息发送<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@hadoop03 bin]# ./kafka-console-producer.sh --broker-list 192.168.43.22:9092,192.168.43.23:9092 --topic flumetopictest1</span><br></pre></td></tr></table></figure></p>
+<p>发送消息，此时kafka 就可以接收到消息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">18/02/03 20:36:57 INFO sink.LoggerSink: Event: &#123; headers:&#123;topic=flumetopictest1, partition=2, timestamp=1517661413068&#125; body: 31 32 33 31 33 32 32 31                         12313221 &#125;</span><br><span class="line">18/02/03 20:37:09 INFO sink.LoggerSink: Event: &#123; headers:&#123;topic=flumetopictest1, partition=1, timestamp=1517661428930&#125; body: 77 69 20 61 69 79 6F 75 08 08 08                wi aiyou... &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="5-Source-组件-Taildir-source"><a href="#5-Source-组件-Taildir-source" class="headerlink" title="5.Source 组件 -Taildir source"></a>5.Source 组件 -Taildir source</h4><p> 监听一个文件夹或者文件，通过正则表达式匹配需要监听的 数据源文件，Taildir Source通过将监听的文件位置写入到文件中来实现断点续传，并且能够保证没有重复数据的读取.</p>
+<ul>
+<li>重要参数<br><br>type：source类型TAILDIR<br><br>positionFile：保存监听文件读取位置的文件路径<br><br>idleTimeout：关闭空闲文件延迟时间，如果有新的记录添加到已关闭的空闲文件<br><br>taildir srouce将继续打开该空闲文件，默认值120000毫秒<br><br>writePosInterval：向保存读取位置文件中写入读取文件位置的时间间隔，默认值<br>3000毫秒<br><br>batchSize：批量写入channel最大event数，默认值100<br><br>maxBackoffSleep：每次最后一次尝试没有获取到监听文件最新数据的最大延迟时 间，默认值5000毫秒<br><br>cachePatternMatching：对于监听的文件夹下通过正则表达式匹配的文件可能数量 会很多，将匹配成功的监听文件列表和读取文件列表的顺序都添加到缓存中，可以提高性能，默认值true<br><br>fileHeader ：是否添加文件的绝对路径到event的header中，默认值false<br><br>fileHeaderKey：添加到event header中文件绝对路径的键值，默认值file<br><br>filegroups：监听的文件组列表，taildirsource通过文件组监听多个目录或文件<br><br>filegroups.<filegroupname>：文件正则表达式路径或者监听指定文件路径<br><br>channels：Source对接的Channel名称<br></filegroupname></li>
+<li>配置一个taildir Source,具体taildirsource.conf 配置文件内容如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">taildiragent.sources=r1</span><br><span class="line">taildiragent.channels=c1</span><br><span class="line">taildiragent.sinks=k1</span><br><span class="line">taildiragent.sources.r1.type=TAILDIR</span><br><span class="line">taildiragent.sources.r1.positionFile=/home/hadoop/apps/flume/taildir/position/taildir_position.json</span><br><span class="line">taildiragent.sources.r1.filegroups=f1 f2</span><br><span class="line">taildiragent.sources.r1.filegroups.f1=/home/hadoop/apps/flume/taildir/test1/test.log</span><br><span class="line">taildiragent.sources.r1.filegroups.f2=/home/hadoop/apps/flume/taildir/test2/.*log.*</span><br><span class="line">taildiragent.sources.r1.channels=c1</span><br><span class="line">taildiragent.channels.c1.type=memory</span><br><span class="line">taildiragent.channels.c1.transcationCapacity=1000</span><br><span class="line">taildiragent.sinks.k1.type=logger</span><br><span class="line">taildiragent.sinks.k1.channel=c1</span><br></pre></td></tr></table></figure>
+<p>启动一个taildirSource agent ,代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 conf]# flume-ng agent --conf conf --conf-file taildirsource.conf --name taildiragent -Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+<p>开始在test1和test2文件夹写入文件，观察agent消息接收。</p>
+<h4 id="6-Channel组件"><a href="#6-Channel组件" class="headerlink" title="6.Channel组件"></a>6.Channel组件</h4><ul>
+<li>Channel：Channel被设计为event中转暂存区，存储Source 收集并且没有被Sink消费的event ，为了平衡Source收集 和Sink读取数据的速度，可视为Flume内部的消息队列。</li>
+<li>Channel是线程安全的并且具有事务性，支持source写失 败重复写和sink读失败重复读等操作</li>
+<li>常用的Channel类型有：Memory Channel、File Channel、<br>Kafka Channel、JDBC Channel等<h4 id="7-Channel组件-Memory-Channel"><a href="#7-Channel组件-Memory-Channel" class="headerlink" title="7.Channel组件- Memory Channel"></a>7.Channel组件- Memory Channel</h4></li>
+<li>Memory Channel：使用内存作为Channel，Memory Channel读写速度 快，但是存储数据量小，Flume进程挂掉、服务器停机或者重启都会 导致数据丢失。部署Flume Agent的线上服务器内存资源充足、不关 心数据丢失的场景下可以使用<br>关键参数：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">type ：channel类型memory</span><br><span class="line">capacity ：channel中存储的最大event数，默认值100</span><br><span class="line">transactionCapacity ：一次事务中写入和读取的event最大数，默认值100。</span><br><span class="line">keep-alive：在Channel中写入或读取event等待完成的超时时间，默认值3秒</span><br><span class="line">byteCapacityBufferPercentage：缓冲空间占Channel容量（byteCapacity）的百分比，为event中的头信息保留了空间，默认值20（单位百分比）</span><br><span class="line">byteCapacity ：Channel占用内存的最大容量，默认值为Flume堆内存的80%</span><br></pre></td></tr></table></figure>
+<h4 id="8-Channel组件-File-Channel"><a href="#8-Channel组件-File-Channel" class="headerlink" title="8. Channel组件- File Channel"></a>8. Channel组件- File Channel</h4><ul>
+<li>File Channel：将event写入到磁盘文件中，与Memory Channel相比存 储容量大，无数据丢失风险。</li>
+<li>File Channle数据存储路径可以配置多磁盘文件路径，提高写入文件性能</li>
+<li>Flume将Event顺序写入到File Channel文件的末尾，在配置文件中通<br>过设置maxFileSize参数设置数据文件大小上限</li>
+<li>当一个已关闭的只读数据文件中的Event被完全读取完成，并且Sink已经提交读取完成的事务，则Flume将删除存储该数据文件</li>
+<li>通过设置检查点和备份检查点在Agent重启之后能够快速将File Channle中的数据按顺序回放到内存中<br>关键参数如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">type：channel类型为file </span><br><span class="line">checkpointDir：检查点目录，默认在启动flume用户目录下创建，建 议单独配置磁盘路径 </span><br><span class="line">useDualCheckpoints：是否开启备份检查点，默认false，建议设置为true开启备份检查点，备份检查点的作用是当Agent意外出错导致写 入检查点文件异常，在重新启动File  Channel时通过备份检查点将数据回放到内存中，如果不开启备份检查点，在数据回放的过程中发现检查点文件异常会对所数据进行全回放，全回放的过程相当耗时 </span><br><span class="line">backupCheckpointDir：备份检查点目录，最好不要和检查点目录在同 一块磁盘上 </span><br><span class="line">checkpointInterval：每次写检查点的时间间隔，默认值30000毫秒 </span><br><span class="line">dataDirs：数据文件磁盘存储路径，建议配置多块盘的多个路径，通过磁盘的并行写入来提高file channel性能，多个磁盘路径用逗号隔开</span><br><span class="line">transactionCapacity：一次事务中写入和读取的event最大数，默认值 10000</span><br><span class="line">maxFileSize：每个数据文件的最大大小，默认值：2146435071字节</span><br><span class="line">minimumRequiredSpace：磁盘路径最小剩余空间，如果磁盘剩余空 间小于设置值，则不再写入数据</span><br><span class="line">capacity：file channel可容纳的最大event数</span><br><span class="line">keep-alive：在Channel中写入或读取event等待完成的超时时间，默认值3秒</span><br></pre></td></tr></table></figure>
+<p>配置一个FileChannel,filechannel.conf 的配置内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">a1.sources = r1</span><br><span class="line">a1.channels = c1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.sources.r1.type = netcat</span><br><span class="line">a1.sources.r1.bind = localhost</span><br><span class="line">a1.sources.r1.port = 44444</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.channels.c1.type = file</span><br><span class="line">a1.channels.c1.dataDirs = /home/hadoop/apps/flume/filechannel/data</span><br><span class="line">a1.channels.c1.checkpointDir = /home/hadoop/apps/flume/filechannel/checkpoint </span><br><span class="line">a1.channels.c1.useDualCheckpoints = true</span><br><span class="line">a1.channels.c1.backupCheckpointDir = /home/hadoop/apps/flume/filechannel/backup</span><br><span class="line">a1.sinks.k1.type = logger</span><br><span class="line">a1.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+<p>启动一个FileChannel,启动命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 bin]# flume-ng agent --conf conf --conf-file filechannle.conf --name a1 -Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+<p>向配置文件端口44444发送数据，观察Channel记录情况</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">telnet localhost asdfasd</span><br></pre></td></tr></table></figure>
+<p>此时可以观察到控制台打印监控结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">18/02/04 21:15:44 INFO sink.LoggerSink: Event: &#123; headers:&#123;&#125; body: 61 64 66 61 64 66 61 64 66 61 73 66 0D          adfadfadfasf. &#125;</span><br><span class="line">18/02/04 21:15:48 INFO file.EventQueueBackingStoreFile: Start checkpoint for /home/hadoop/apps/flume/filechannel/checkpoint/checkpoint, elements to sync = 1</span><br><span class="line">18/02/04 21:15:48 INFO file.EventQueueBackingStoreFile: Updating checkpoint metadata: logWriteOrderID: 1517749968978, queueSize: 0, queueHead: 0</span><br><span class="line">18/02/04 21:15:48 INFO file.EventQueueBackingStoreFile: Attempting to back up checkpoint.</span><br><span class="line">18/02/04 21:15:48 INFO file.Serialization: Skipping in_use.lock because it is in excludes set</span><br><span class="line">18/02/04 21:15:48 INFO file.Serialization: Deleted the following files: , checkpoint, checkpoint.meta, inflightputs, inflighttakes.</span><br><span class="line">18/02/04 21:15:48 INFO file.Log: Updated checkpoint for file: /home/hadoop/apps/flume/filechannel/data/log-2 position: 170 logWriteOrderID: 1517749968978</span><br><span class="line">18/02/04 21:15:49 INFO file.EventQueueBackingStoreFile: Checkpoint backup completed.</span><br></pre></td></tr></table></figure>
+<h4 id="9-Channel组件-Kafka-Channel"><a href="#9-Channel组件-Kafka-Channel" class="headerlink" title="9.Channel组件- Kafka Channel"></a>9.Channel组件- Kafka Channel</h4><p>Kafka Channel：将分布式消息队列kafka作为channel相对于Memory Channel和File Channel存储容量更大、 容错能力更强，弥补了其他两种Channel的短板，如果合理利用Kafka的性能，能够达到事半功倍的效果。<br>关键参数如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">type：Kafka Channel类型org.apache.flume.channel.kafka.KafkaChannel</span><br><span class="line">kafka.bootstrap.servers：Kafka broker列表，格式为ip1:port1, ip2:port2…，建 议配置多个值提高容错能力，多个值之间用逗号隔开</span><br><span class="line">kafka.topic：topic名称，默认值“flume-channel”</span><br><span class="line">kafka.consumer.group.id：Consumer Group Id，全局唯一</span><br><span class="line">parseAsFlumeEvent：是否以Avro FlumeEvent模式写入到Kafka Channel中，  默认值true，event的header信息与event body都写入到kafka中</span><br><span class="line">pollTimeout：轮询超时时间，默认值500毫秒</span><br><span class="line">kafka.consumer.auto.offset.reset：earliest表示从最早的偏移量开始拉取，latest表示从最新的偏移量开始拉取，none表示如果没有发现该Consumer组之前拉 取的偏移量则抛异常</span><br></pre></td></tr></table></figure>
+<p>配置一个KafakChannel， kafkachannel.conf 配置内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">a1.sources = r1</span><br><span class="line">a1.channels = c1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.sources.r1.type = netcat</span><br><span class="line">a1.sources.r1.bind = localhost</span><br><span class="line">a1.sources.r1.port = 44444</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.channels.c1.type = org.apache.flume.channel.kafka.KafkaChannel</span><br><span class="line">a1.channels.c1.kafka.bootstrap.servers = 192.168.43.22:9092,192.168.43.23:9092</span><br><span class="line">a1.channels.c1.kafka.topic = flumechannel2</span><br><span class="line">a1.channels.c1.kafka.consumer.group.id = flumecgtest1</span><br><span class="line">a1.sinks.k1.type = logger</span><br><span class="line">a1.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+<p>启动kafak服务，创建一个kafka主题，命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop03 bin]# ./kafka-server-start.sh -daemon ../config/server.properties</span><br><span class="line">[root@hadoop03 bin]# ./kafka-topics.sh --create --zookeeper 192.168.43.20:2181 --replication-factor 1 --partitions 3 --topic flumechannel2</span><br></pre></td></tr></table></figure>
+<p>查看创建的主题信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop03 bin]# ./kafka-topics.sh --list --zookeeper 192.168.43.20:2181</span><br><span class="line">__consumer_offsets</span><br><span class="line">flumechannel2</span><br><span class="line">topicnewtest1</span><br></pre></td></tr></table></figure></p>
+<p>启动kafka agent,使用telnet发送数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 conf]# flume-ng agent --conf conf --conf-file kafkachannel.conf --name a1 -Dflume.root.logger=INFO,console</span><br><span class="line">[root@hadoop01 flume]# clear</span><br><span class="line">[root@hadoop01 flume]# telnet localhost 44444 </span><br><span class="line">Trying ::1...</span><br><span class="line">telnet: connect to address ::1: Connection refused</span><br><span class="line">Trying 127.0.0.1...</span><br><span class="line">Connected to localhost.</span><br><span class="line">Escape character is &apos;^]&apos;.</span><br><span class="line">abc</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+<p>监听信息如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">18/02/04 21:39:33 INFO sink.LoggerSink: Event: &#123; headers:&#123;&#125; body: 61 62 63 0D                                     abc. &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="10-Sink组件"><a href="#10-Sink组件" class="headerlink" title="10.Sink组件"></a>10.Sink组件</h4><ul>
+<li>Sink：从Channel消费event，输出到外部存储，或者输出到下一个阶段的agent</li>
+<li>一个Sink只能从一个Channel中消费event</li>
+<li>当Sink写出event成功后，就会向Channel提交事务。Sink  事务提交成功，处理完成的event将会被Channel删除。否 则Channel会等待Sink重新消费处理失败的event</li>
+<li>Flume提供了丰富的Sink组件，如Avro Sink、HDFS Sink、Kafka Sink、File Roll Sink、HTTP Sink等<h4 id="11-Sink组件-Avro-Sink"><a href="#11-Sink组件-Avro-Sink" class="headerlink" title="11.Sink组件- Avro Sink"></a>11.Sink组件- Avro Sink</h4></li>
+<li>Avro Sink常用于对接下一层的Avro Source，通过发送RPC请求将Event发送到下一层的Avro Source</li>
+<li>为了减少Event传输占用大量的网络资源， Avro Sink提供了端到端的批量压缩数据传输</li>
+</ul>
+<p>关键参数说明<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">type：Sink类型为avro。</span><br><span class="line">hostname：绑定的目标Avro Souce主机名称或者IP</span><br><span class="line">port：绑定的目标Avro Souce端口号</span><br><span class="line">batch-size：批量发送Event数，默认值100</span><br><span class="line">compression-type：是否使用压缩，如果使用压缩设则值为</span><br><span class="line">“deflate”， Avro Sink设置了压缩那么Avro Source也应设置相同的 压缩格式，目前支持zlib压缩，默认值none</span><br><span class="line">compression-level：压缩级别，0表示不压缩，从1到9数字越大压缩</span><br><span class="line">效果越好，默认值6</span><br></pre></td></tr></table></figure></p>
+<h4 id="12-Sink组件-HDFS-Sink"><a href="#12-Sink组件-HDFS-Sink" class="headerlink" title="12.Sink组件- HDFS Sink"></a>12.Sink组件- HDFS Sink</h4><ul>
+<li>HDFS Sink将Event写入到HDFS中持久化存储</li>
+<li>HDFS Sink提供了强大的时间戳转义功能，根据Event头信息中的</li>
+<li>timestamp时间戳信息转义成日期格式，在HDFS中以日期目录分层存储</li>
+</ul>
+<p>关键参数信息说明如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">type：Sink类型为hdfs。</span><br><span class="line">hdfs.path：HDFS存储路径，支持按日期时间分区。</span><br><span class="line">hdfs.filePrefix：Event输出到HDFS的文件名前缀，默认前缀FlumeData</span><br><span class="line">hdfs.fileSuffix：Event输出到HDFS的文件名后缀</span><br><span class="line">hdfs.inUsePrefix：临时文件名前缀</span><br><span class="line">hdfs.inUseSuffix：临时文件名后缀，默认值.tmp</span><br><span class="line">hdfs.rollInterval：HDFS文件滚动生成时间间隔，默认值30秒，该值设置 为0表示文件不根据时间滚动生成</span><br></pre></td></tr></table></figure></p>
+<p>配置一个hdfsink.conf文件，配置内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">a1.sources = r1</span><br><span class="line">a1.channels = c1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.sources.r1.type = netcat</span><br><span class="line">a1.sources.r1.bind = localhost</span><br><span class="line">a1.sources.r1.port = 44444</span><br><span class="line">a1.sources.r1.interceptors = i1</span><br><span class="line">a1.sources.r1.interceptors.i1.type = timestamp</span><br><span class="line">a1.sources.r1.interceptors.i1.preserveExisting = false</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = 10000 </span><br><span class="line">a1.channels.c1.transactionCapacity = 1000</span><br><span class="line">a1.sinks.k1.type = hdfs</span><br><span class="line">a1.sinks.k1.channel = c1</span><br><span class="line">a1.sinks.k1.hdfs.path = /data/flume/%Y%m%d</span><br><span class="line">a1.sinks.k1.hdfs.filePrefix = hdfssink</span><br><span class="line">a1.sinks.k1.hdfs.fileType = DataStream</span><br><span class="line">a1.sinks.k1.hdfs.writeFormat = Text</span><br><span class="line">a1.sinks.k1.hdfs.round = true</span><br><span class="line">a1.sinks.k1.hdfs.roundValue = 1</span><br><span class="line">a1.sinks.k1.hdfs.roundUnit = minute</span><br><span class="line">a1.sinks.k1.hdfs.callTimeout = 60000</span><br></pre></td></tr></table></figure>
+<p>启动一个hdfssink agent，命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 conf]# flume-ng agent --conf conf --conf-file hdfssink.conf --name a1 -Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+<p>使用telnet 向44444发送数据，观察数据写入结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@hadoop01 root]$ telnet localhost 44444</span><br><span class="line">Trying ::1...</span><br><span class="line">telnet: connect to address ::1: Connection refused</span><br><span class="line">Trying 127.0.0.1...</span><br><span class="line">Connected to localhost.</span><br><span class="line">Escape character is &apos;^]&apos;.</span><br><span class="line">abc</span><br><span class="line">OK</span><br><span class="line">2323444</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+<p>此时控制台打印，在HDFS文件系统生成一个临时文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">8/02/04 22:41:52 INFO hdfs.HDFSDataStream: Serializer = TEXT, UseRawLocalFileSystem = false</span><br><span class="line">18/02/04 22:41:52 INFO hdfs.BucketWriter: Creating /data/flume/20180204/hdfssink.1517755312242.tmp</span><br><span class="line">18/02/04 22:42:24 INFO hdfs.BucketWriter: Closing /data/flume/20180204/hdfssink.1517755312242.tmp</span><br><span class="line">18/02/04 22:42:24 INFO hdfs.BucketWriter: Renaming /data/flume/20180204/hdfssink.1517755312242.tmp to /data/flume/20180204/hdfssink.1517755312242</span><br><span class="line">18/02/04 22:42:24 INFO hdfs.HDFSEventSink: Writer callback called.</span><br></pre></td></tr></table></figure>
+<p>值得注意的是：<strong>请使用hadoop用户来执行agent的创建和消息的发送，避免因权限导致HDFS文件无法写入</strong></p>
+<h4 id="13-Sink组件-Kafka-Sink"><a href="#13-Sink组件-Kafka-Sink" class="headerlink" title="13.Sink组件- Kafka Sink"></a>13.Sink组件- Kafka Sink</h4><p>Flume通过KafkaSink将Event写入到Kafka指定的主题中<br>主要参数说明如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">type：Sink类型，值为KafkaSink类路径  org.apache.flume.sink.kafka.KafkaSink。</span><br><span class="line">kafka.bootstrap.servers：Broker列表，定义格式host:port，多个Broker之间用逗号隔开，可以配置一个也可以配置多个，用于Producer发现集群中的Broker，建议配置多个，防止当个Broker出现问题连接 失败。</span><br><span class="line">kafka.topic：Kafka中Topic主题名称，默认值flume-topic。</span><br><span class="line">flumeBatchSize：Producer端单次批量发送的消息条数，该值应该根据实际环境适当调整，增大批量发送消息的条数能够在一定程度上提高性能，但是同时也增加了延迟和Producer端数据丢失的风险。 默认值100。</span><br><span class="line">kafka.producer.acks：设置Producer端发送消息到Borker是否等待接收Broker返回成功送达信号。0表示Producer发送消息到Broker之后不需要等待Broker返回成功送达的信号，这种方式吞吐量高，但是存 在数据丢失的风险。1表示Broker接收到消息成功写入本地log文件后向Producer返回成功接收的信号，不需要等待所有的Follower全部同步完消息后再做回应，这种方式在数据丢失风险和吞吐量之间做了平衡。all（或者-1）表示Broker接收到Producer的消息成功写入本 地log并且等待所有的Follower成功写入本地log后向Producer返回成功接收的信号，这种方式能够保证消息不丢失，但是性能最差。默 认值1。</span><br><span class="line">useFlumeEventFormat：默认值false，Kafka Sink只会将Event body内 容发送到Kafka Topic中。如果设置为true，Producer发送到KafkaTopic中的Event将能够保留Producer端头信息</span><br></pre></td></tr></table></figure>
+<p>配置一个kafkasink.conf,具体配置内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">a1.sources = r1</span><br><span class="line">a1.channels = c1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.sources.r1.type = netcat</span><br><span class="line">a1.sources.r1.bind = localhost</span><br><span class="line">a1.sources.r1.port = 44444</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = 10000 </span><br><span class="line">a1.channels.c1.transactionCapacity = 1000</span><br><span class="line">a1.sinks.k1.type = org.apache.flume.sink.kafka.KafkaSink</span><br><span class="line">a1.sinks.k1.channel = c1</span><br><span class="line">a1.sinks.k1.kafka.topic = FlumeKafkaSinkTopic1</span><br><span class="line">a1.sinks.k1.kafka.bootstrap.servers = 192.168.43.22:9092,192.168.43.23:9092</span><br><span class="line">a1.sinks.k1.kafka.flumeBatchSize = 100</span><br><span class="line">a1.sinks.k1.kafka.producer.acks = 1</span><br></pre></td></tr></table></figure>
+<p>启动kafka Broker节点22和Broker节点23</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop03 bin]# ./kafka-server-start.sh -daemon ../config/server.properties</span><br></pre></td></tr></table></figure>
+<p>按配置文件创建主题信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop03 bin]# ./kafka-topics.sh --create --zookeeper 192.168.43.20:2181 --replication-factor 1 --partitions 3 --topic FlumeKafkaSinkTopic1</span><br><span class="line">Created topic &quot;FlumeKafkaSinkTopic1&quot;.</span><br></pre></td></tr></table></figure></p>
+<p>启动一个kafkasink agent，启动命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 conf]# flume-ng agent --conf conf --conf-file kafkasink.conf --name a1 &gt;/dev/null 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure></p>
+<h4 id="14-Interceptor拦截器"><a href="#14-Interceptor拦截器" class="headerlink" title="14.Interceptor拦截器"></a>14.Interceptor拦截器</h4><ul>
+<li>Source将event写入到Channel之前调用拦截器</li>
+<li>Source和Channel之间可以有多个拦截器，不同的拦截器使用不同的 规则处理Event</li>
+<li>可选、轻量级、可插拔的插件</li>
+<li>通过实现Interceptor接口实现自定义的拦截器</li>
+<li>内置拦截器：Timestamp Interceptor、Host Interceptor、UUID Interceptor、Static Interceptor、Regex Filtering Interceptor等<h4 id="15-Timestamp-Interceptor"><a href="#15-Timestamp-Interceptor" class="headerlink" title="15.Timestamp Interceptor"></a>15.Timestamp Interceptor</h4></li>
+<li>Flume使用时间戳拦截器在event头信息中添加时间戳信息， Key为timestamp，Value为拦截器拦截Event时的时间戳</li>
+<li>头信息时间戳的作用，比如HDFS存储的数据采用时间分区存储，Sink可以根据Event头信息中的时间戳将Event按照时间分区写入到 HDFS</li>
+<li>关键参数说明：<ul>
+<li>type:拦截器类型为timestamp<ul>
+<li>preserveExisting：如果头信息中存在timestamp时间戳信息是否保留原来的时间戳信息，true保留，false使用新的时间戳替换已经存在的时间戳，默认值为false<h4 id="16-Host-Interceptor"><a href="#16-Host-Interceptor" class="headerlink" title="16.Host Interceptor"></a>16.Host Interceptor</h4></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Flume使用主机戳拦截器在Event头信息中添加主机名称或者IP</li>
+<li>主机拦截器的作用：比如Source将Event按照主机名称写入到不同的Channel中便于后续的Sink对不同Channnel中的数据分开处理</li>
+<li>关键参数说明：<ul>
+<li>type:拦截器类型为host</li>
+<li>preserveExisting：如果头信息中存在timestamp时间戳信息是否保留原来的时间戳信息，true保留，false使用新的时间戳替换已经存在的时间戳，默认值为false</li>
+<li>useIP：是否使用IP作为主机信息写入都信息，默认值为false</li>
+<li>hostHeader：设置头信息中主机信息的Key，默认值为host<br><h4 id="17-Host-InterceptorStatic-Interceptor"><a href="#17-Host-InterceptorStatic-Interceptor" class="headerlink" title="17.Host InterceptorStatic Interceptor"></a>17.Host InterceptorStatic Interceptor</h4></li>
+</ul>
+</li>
+<li>Flume使用static  interceptor静态拦截器在evetn头信息添加静态信息</li>
+<li>关键参数说明：</li>
+<li>type:拦截器类型为static<ul>
+<li>preserveExisting：如果头信息中存在timestamp时间戳信息是否保留原来的时间戳信息，true保留，false使用新的时间戳替换已经 存在的时间戳，默认值为false</li>
+<li>key：头信息中的键</li>
+<li>value：头信息中键对应的值<h4 id="18-Selector选择器"><a href="#18-Selector选择器" class="headerlink" title="18.Selector选择器"></a>18.Selector选择器</h4></li>
+</ul>
+</li>
+<li>Source将event写入到Channel之前调用拦截器，如果配置了Interceptor拦截器，则Selector在拦截器全部处理完之后调用。通过<br>selector决定event写入Channel的方式</li>
+<li>内置Replicating Channel Selector复制Channel选择器、 Multiplexing  Channel Selector复用Channel选择器<h4 id="19-Replicating-Channel-Selector"><a href="#19-Replicating-Channel-Selector" class="headerlink" title="19.Replicating Channel Selector"></a>19.Replicating Channel Selector</h4></li>
+<li>如果Channel选择器没有指定，默认是Replicating Channel Selector。即一个Source以复制的方式将一个event同时写入到多个Channel中，不同的Sink可以从不同的Channel中获取相同的event。</li>
+<li>关键参数说明：<ul>
+<li>selector.type：Channel选择器类型为replicating</li>
+<li>selector.optional：定义可选Channel，当写入event到可选Channel失败时，不会向Source抛出异常，继续执行。多个可选Channel之 间用空格隔开</li>
+</ul>
+</li>
+</ul>
+<p>一个source将一个event拷贝到多个channel，通过不同的sink消费不同的channel，将相同的event输出到不同的地方<br>配置文件：replicating_selector.conf</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">a1.sources = r1</span><br><span class="line">a1.channels = c1 c2</span><br><span class="line">a1.sinks = k1 k2</span><br><span class="line">#定义source</span><br><span class="line">a1.sources.r1.type = netcat</span><br><span class="line">a1.sources.r1.bind = localhost</span><br><span class="line">a1.sources.r1.port = 44444</span><br><span class="line">#设置复制选择器</span><br><span class="line">a1.sources.r1.selector.type = replicating</span><br><span class="line">#设置required channel</span><br><span class="line">a1.sources.r1.channels = c1 c2</span><br><span class="line">#设置channel c1</span><br><span class="line">a1.channels.c1.type = memory </span><br><span class="line">a1.channels.c1.capacity = 1000</span><br><span class="line">a1.channels.c1.transactionCapacity = 1000</span><br><span class="line">#设置channel c2</span><br><span class="line">a1.channels.c2.type = memory </span><br><span class="line">a1.channels.c2.capacity = 1000</span><br><span class="line">a1.channels.c2.transactionCapacity = 1000</span><br><span class="line">#设置kafka sink</span><br><span class="line">a1.sinks.k1.channel = c1</span><br><span class="line">a1.sinks.k1.type = org.apache.flume.sink.kafka.KafkaSink</span><br><span class="line">a1.sinks.k1.kafka.topic = FlumeSelectorTopic1</span><br><span class="line">a1.sinks.k1.kafka.bootstrap.servers = 192.168.43.22:9092,192.168.23.103:9092</span><br><span class="line">a1.sinks.k1.kafka.flumeBatchSize = 5</span><br><span class="line">a1.sinks.k1.kafka.producer.acks = 1</span><br><span class="line">#设置file sink</span><br><span class="line">a1.sinks.k2.channel = c2</span><br><span class="line">a1.sinks.k2.type = file_roll</span><br><span class="line">a1.sinks.k2.sink.directory = /home/hadoop/apps/flume/selector</span><br><span class="line">a1.sinks.k2.sink.rollInterval = 60</span><br></pre></td></tr></table></figure>
+<p>分别写入到kafka和文件中</p>
+<p>创建主题FlumeKafkaSinkTopic1</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/kafka-topics.sh --create --zookeeper 192.168.183.100:2181 --replication-factor 1 --partitions 3 --topic FlumeSelectorTopic1</span><br></pre></td></tr></table></figure>
+<p>启动flume agent</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/flume-ng agent --conf conf --conf-file conf/replicating_selector.conf --name a1</span><br></pre></td></tr></table></figure>
+<p>使用telnet发送数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">telnet localhost 44444</span><br></pre></td></tr></table></figure></p>
+<p>查看/home/hadoop/apps/flume/selector路径下的数据</p>
+<p>查看kafka FlumeSelectorTopic1主题数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/kafka-console-consumer.sh --zookeeper 192.168.183.100:2181 --from-beginning --topic FlumeSelectorTopic1</span><br></pre></td></tr></table></figure>
+<h4 id="20-Multiplexing-Channel-Selector"><a href="#20-Multiplexing-Channel-Selector" class="headerlink" title="20.Multiplexing    Channel Selector"></a>20.Multiplexing    Channel Selector</h4><p>-Multiplexing Channel Selector多路复用选择器根据event的头信息中不<br>同键值数据来判断Event应该被写入到哪个Channel中</p>
+<ul>
+<li>三种级别的Channel，分别是必选channle、可选channel、默认channel</li>
+<li>关键参数说明：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">selector.type：Channel选择器类型为multiplexing</span><br><span class="line">selector.header：设置头信息中用于检测的headerName</span><br><span class="line">selector.default：默认写入的Channel列表</span><br><span class="line">selector.mapping.*：headerName对应的不同值映射的不同Channel列表</span><br><span class="line">selector.optional：可选写入的Channel列表</span><br></pre></td></tr></table></figure>
+<p>配置文件multiplexing_selector.conf、avro_sink1.conf、avro_sink2.conf、avro_sink3.conf<br>向不同的avro_sink对应的配置文件的agent发送数据，不同的avro_sink配置文件通过static interceptor在event头信息中写入不同的静态数据<br>multiplexing_selector根据event头信息中不同的静态数据类型分别发送到不同的目的地 <br><br>multiplexing_selector.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">a3.sources = r1</span><br><span class="line">a3.channels = c1 c2 c3</span><br><span class="line">a3.sinks = k1 k2 k3</span><br><span class="line">a3.sources.r1.type = avro</span><br><span class="line">a3.sources.r1.bind = 192.168.183.100</span><br><span class="line">a3.sources.r1.port = 8888</span><br><span class="line">a3.sources.r1.threads= 3</span><br><span class="line">#设置multiplexing selector</span><br><span class="line">a3.sources.r1.selector.type = multiplexing</span><br><span class="line">a3.sources.r1.selector.header = logtype</span><br><span class="line">#通过header中logtype键对应的值来选择不同的sink</span><br><span class="line">a3.sources.r1.selector.mapping.ad = c1</span><br><span class="line">a3.sources.r1.selector.mapping.search = c2</span><br><span class="line">a3.sources.r1.selector.default = c3</span><br><span class="line">a3.sources.r1.channels = c1 c2 c3</span><br><span class="line">a3.channels.c1.type = memory</span><br><span class="line">a3.channels.c1.capacity = 10000</span><br><span class="line">a3.channels.c1.transactionCapacity = 1000</span><br><span class="line">a3.channels.c2.type = memory</span><br><span class="line">a3.channels.c2.capacity = 10000</span><br><span class="line">a3.channels.c2.transactionCapacity = 1000</span><br><span class="line">a3.channels.c3.type = memory</span><br><span class="line">a3.channels.c3.capacity = 10000</span><br><span class="line">a3.channels.c3.transactionCapacity = 1000</span><br><span class="line">#分别设置三个sink的不同输出</span><br><span class="line">a3.sinks.k1.type = file_roll</span><br><span class="line">a3.sinks.k1.channel = c1</span><br><span class="line">a3.sinks.k1.sink.directory = /home/hadoop/apps/flume/multiplexing/k11</span><br><span class="line">a3.sinks.k1.sink.rollInterval = 60</span><br><span class="line">a3.sinks.k2.channel = c2</span><br><span class="line">a3.sinks.k2.type = file_roll</span><br><span class="line">a3.sinks.k2.sink.directory = /home/hadoop/apps/flume/multiplexing/k12</span><br><span class="line">a3.sinks.k2.sink.rollInterval = 60</span><br><span class="line">a3.sinks.k3.channel = c3</span><br><span class="line">a3.sinks.k3.type = file_roll</span><br><span class="line">a3.sinks.k3.sink.directory = /home/hadoop/apps/flume/multiplexing/k13</span><br><span class="line">a3.sinks.k3.sink.rollInterval = 60</span><br></pre></td></tr></table></figure></p>
+<p>avro_sink1.conf</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">agent1.sources = r1</span><br><span class="line">agent1.channels = c1</span><br><span class="line">agent1.sinks = k1</span><br><span class="line">agent1.sources.r1.type = netcat</span><br><span class="line">agent1.sources.r1.bind = localhost</span><br><span class="line">agent1.sources.r1.port = 44444</span><br><span class="line">agent1.sources.r1.interceptors = i1</span><br><span class="line">agent1.sources.r1.interceptors.i1.type = static</span><br><span class="line">agent1.sources.r1.interceptors.i1.key = logtype</span><br><span class="line">agent1.sources.r1.interceptors.i1.value = ad</span><br><span class="line">agent1.sources.r1.interceptors.i1.preserveExisting = false</span><br><span class="line">agent1.sources.r1.channels = c1</span><br><span class="line">agent1.channels.c1.type = memory</span><br><span class="line">agent1.channels.c1.capacity = 10000 </span><br><span class="line">agent1.channels.c1.transactionCapacity = 1000</span><br><span class="line">agent1.sinks.k1.type = avro</span><br><span class="line">agent1.sinks.k1.channel = c1</span><br><span class="line">agent1.sinks.k1.hostname = 192.168.183.100</span><br><span class="line">agent1.sinks.k1.port = 8888</span><br></pre></td></tr></table></figure>
+<p>avro_sink2.conf</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">agent2.sources = r1</span><br><span class="line">agent2.channels = c1</span><br><span class="line">agent2.sinks = k1</span><br><span class="line">agent2.sources.r1.type = netcat</span><br><span class="line">agent2.sources.r1.bind = localhost</span><br><span class="line">agent2.sources.r1.port = 44445</span><br><span class="line">agent2.sources.r1.interceptors = i1</span><br><span class="line">agent2.sources.r1.interceptors.i1.type = static</span><br><span class="line">agent2.sources.r1.interceptors.i1.key = logtype</span><br><span class="line">agent2.sources.r1.interceptors.i1.value = search</span><br><span class="line">agent2.sources.r1.interceptors.i1.preserveExisting = false</span><br><span class="line">agent2.sources.r1.channels = c1</span><br><span class="line">agent2.channels.c1.type = memory</span><br><span class="line">agent2.channels.c1.capacity = 10000 </span><br><span class="line">agent2.channels.c1.transactionCapacity = 1000</span><br><span class="line">agent2.sinks.k1.type = avro</span><br><span class="line">agent2.sinks.k1.channel = c1</span><br><span class="line">agent2.sinks.k1.hostname = 192.168.183.100</span><br><span class="line">agent2.sinks.k1.port = 8888</span><br></pre></td></tr></table></figure>
+<p>avro_sink3.conf</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">agent3.sources = r1</span><br><span class="line">agent3.channels = c1</span><br><span class="line">agent3.sinks = k1</span><br><span class="line">agent3.sources.r1.type = netcat</span><br><span class="line">agent3.sources.r1.bind = localhost</span><br><span class="line">agent3.sources.r1.port = 44446</span><br><span class="line">agent3.sources.r1.interceptors = i1</span><br><span class="line">agent3.sources.r1.interceptors.i1.type = static</span><br><span class="line">agent3.sources.r1.interceptors.i1.key = logtype</span><br><span class="line">agent3.sources.r1.interceptors.i1.value = other</span><br><span class="line">agent3.sources.r1.interceptors.i1.preserveExisting = false</span><br><span class="line">agent3.sources.r1.channels = c1</span><br><span class="line">agent3.channels.c1.type = memory</span><br><span class="line">agent3.channels.c1.capacity = 10000 </span><br><span class="line">agent3.channels.c1.transactionCapacity = 1000</span><br><span class="line">agent3.sinks.k1.type = avro</span><br><span class="line">agent3.sinks.k1.channel = c1</span><br><span class="line">agent3.sinks.k1.hostname = 192.168.183.100</span><br><span class="line">agent3.sinks.k1.port = 8888</span><br></pre></td></tr></table></figure>
+<p>在/home/hadoop/apps/flume/multiplexing目录下分别创建看k1 k2 k3目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bin/flume-ng agent --conf conf --conf-file conf/multiplexing_selector.conf --name a3 -Dflume.root.logger=INFO,console</span><br><span class="line">bin/flume-ng agent --conf conf --conf-file conf/avro_sink1.conf --name agent1 &gt;/dev/null 2&gt;&amp;1 &amp;</span><br><span class="line">bin/flume-ng agent --conf conf --conf-file conf/avro_sink2.conf --name agent2 &gt;/dev/null 2&gt;&amp;1 &amp;</span><br><span class="line">bin/flume-ng agent --conf conf --conf-file conf/avro_sink3.conf --name agent3 &gt;/dev/null 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+<p>使用telnet发送数据<br>telnet localhost 44444</p>
+<h4 id="21-Sink-Processor"><a href="#21-Sink-Processor" class="headerlink" title="21.Sink Processor"></a>21.Sink Processor</h4><ul>
+<li>Sink Processor协调多个sink间进行load balance和fail over</li>
+<li>Default Sink Processor只有一个sink，无需创建Sink Processor</li>
+<li>Sink Group：将多个sink放到一个组内，要求组内一个sink消费channel</li>
+<li>Load-Balancing Sink Processor（负载均衡处理器）round_robin(默认)或 random</li>
+<li>Failover Sink Processor（容错处理器）可定义一个sink优先级列表，根据优先级选择使用的sink<h4 id="22-Load-Balancing-Sink-Processor"><a href="#22-Load-Balancing-Sink-Processor" class="headerlink" title="22.Load-Balancing Sink Processor"></a>22.Load-Balancing Sink Processor</h4>关键参数说明：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sinks：sink组内的子Sink，多个子sink之间用空格隔开</span><br><span class="line">processor.type：设置负载均衡类型load_balance</span><br><span class="line">processor.backoff：设置为true时，如果在系统运行过程中执行的Sink失败，会将失败的Sink放进一个冷却池中。默认值false</span><br><span class="line">processor.selector.maxTimeOut：失败sink在冷却池中最大驻留时间，默认值30000ms</span><br><span class="line">processor.selector：负载均衡选择算法，可以使用轮询“round_robin”、随机“random”或者是继承AbstractSinkSelector类的自定义负载均衡实现类</span><br></pre></td></tr></table></figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://upload-images.jianshu.io/upload_images/1784853-2e86bae3b2af0531.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="示例" title="">
+                </div>
+                <div class="image-caption">示例</div>
+            </figure>
+<h4 id="23-Failover-Sink-Processor"><a href="#23-Failover-Sink-Processor" class="headerlink" title="23.Failover Sink Processor"></a>23.Failover Sink Processor</h4><p>关键参数说明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sinks：sink组内的子Sink，多个子sink之间用空格隔开</span><br><span class="line">processor.type：设置故障转移类型“failover”</span><br><span class="line">processor.priority.&lt;sinkName&gt;：指定Sink组内各子Sink的优先级别，优先级从高到低，数值越大优先级越高</span><br><span class="line">processor.maxpenalty：等待失败的Sink恢复的最长时间，默认值30000毫秒</span><br></pre></td></tr></table></figure></p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://upload-images.jianshu.io/upload_images/1784853-01c63fe5f0586cb0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="示例" title="">
+                </div>
+                <div class="image-caption">示例</div>
+            </figure>
+<h4 id="24-Failover应用场景"><a href="#24-Failover应用场景" class="headerlink" title="24.Failover应用场景"></a>24.Failover应用场景</h4><ul>
+<li>分布式日志收集场景<ul>
+<li>多个agent收集不同机器上相同类型的日志数据，为了保障高可用，采用分层部署，日志收集层Collector部署两个甚至多个，Agent通过Failover  SinkProcessor实现其中任何一个collector挂掉不影响系统的日志收集服务<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://upload-images.jianshu.io/upload_images/1784853-782d0cca4d4aa7a7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="示例" title="">
+                </div>
+                <div class="image-caption">示例</div>
+            </figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://upload-images.jianshu.io/upload_images/1784853-9b701d7d5da1facc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="总结" title="">
+                </div>
+                <div class="image-caption">总结</div>
+            </figure>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-02-05T13:03:33.000Z" itemprop="dateUpdated">2018-02-05 21:03:33</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="https://yongliangzhang.github.io/blogs">
+            <img src="https://s1.ax2x.com/2018/01/31/ZL8UG.png" alt="YoungLiang">
+            YoungLiang
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogs/tags/flume/">flume</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blogs/tags/kafka/">kafka</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://yongliangzhang.github.io/blogs/2018/02/03/Flume构建日志采集系统/&title=《Flume构建日志采集系统》 — YoungLiang&pic=https://s1.ax2x.com/2018/01/31/ZL8UG.png" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://yongliangzhang.github.io/blogs/2018/02/03/Flume构建日志采集系统/&title=《Flume构建日志采集系统》 — YoungLiang&source=一、Flume介绍1.Flume特点
+Flume是一个分布式的、可靠的、高可用的海量日志采集、聚合和传输的系统
+数据流模型：Source-Channel-..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://yongliangzhang.github.io/blogs/2018/02/03/Flume构建日志采集系统/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Flume构建日志采集系统》 — YoungLiang&url=https://yongliangzhang.github.io/blogs/2018/02/03/Flume构建日志采集系统/&via=https://yongliangzhang.github.io/blogs" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://yongliangzhang.github.io/blogs/2018/02/03/Flume构建日志采集系统/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/blogs/2018/02/02/Mysql_操作笔记/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Mysql 操作笔记</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 来必力City版安装代码 -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC8zMzc5Ny8xMDM1MA==">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div>
+<!-- City版安装代码已完成 -->
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="https://s1.ax2x.com/2018/02/01/Zxkyd.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="https://s1.ax2x.com/2018/02/01/Zxkyd.png" data-alipay="https://s1.ax2x.com/2018/02/01/ZxllR.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/blogs/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>YoungLiang &copy; 2018</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://yongliangzhang.github.io/blogs/2018/02/03/Flume构建日志采集系统/&title=《Flume构建日志采集系统》 — YoungLiang&pic=https://s1.ax2x.com/2018/01/31/ZL8UG.png" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://yongliangzhang.github.io/blogs/2018/02/03/Flume构建日志采集系统/&title=《Flume构建日志采集系统》 — YoungLiang&source=一、Flume介绍1.Flume特点
+Flume是一个分布式的、可靠的、高可用的海量日志采集、聚合和传输的系统
+数据流模型：Source-Channel-..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://yongliangzhang.github.io/blogs/2018/02/03/Flume构建日志采集系统/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Flume构建日志采集系统》 — YoungLiang&url=https://yongliangzhang.github.io/blogs/2018/02/03/Flume构建日志采集系统/&via=https://yongliangzhang.github.io/blogs" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://yongliangzhang.github.io/blogs/2018/02/03/Flume构建日志采集系统/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACuklEQVR42u3b0U4jMQwFUP7/p+F1pVXae51kCtLpU0WHaU6QYo9tvr7i1/d/r39/vrpydU1yZX6fAy88PDy87aWvbp0vOl9Qvlmr9ayuwcPDw7vNy7+43YLVovPwk28cHh4e3u/nJYnyfro8C0t4eHh4f4UXfWWcQL9eAx4eHt5nee2t29T59TVvCgpBWn+g1oKHh4cX89rD/Te8v9Lfw8PDw9vuqrfjAm3pdqe8G60WDw8P7wKvbfDnBYK2VNEm8XnBFw8PD+8sLy8NzMae8vc7o1fL93h4eHgXeHmCmzefXi+ubZXl5do398fDw8M7xMsf/k+1yvaDRFEEwcPDw3uElxziswLErM3frqeIM3h4eHgjXnvU5rB2fGrWWstbdHh4eHj3ePsDAacKHMnWzEoeeHh4ePd4+RHfBoAZKf+0/hvi4eHhlbydRtdOYt2WdJM14OHh4d3mJbfOFz1rVrUjBcOZMjw8PLxDvNlj/P5oaRsYhk8DeHh4eBd47VhV+28As+R4NnW7HLrCw8PDO8rbaerPCgSz4/4YEg8PD2+bl5di23R82Mgf5cPLzcXDw8O7xsuT4FmrLGnw56OxxUbj4eHhXea16WybOreFhrasjIeHh/cMrw0Dbcu/TZfblD0KaXh4eHiP8PLhgDyEzHpSeXMODw8P71O8tqS7P1yVN8lmhWY8PDy853mzgzsqE4xgRUjAw8PDu8xrS7T7xdbZfeqQg4eHh3eUN2tW5aWKtqjRBoY3SDw8PLwLvFnLqh3VahP3dszrQIDBw8PDK3ltMEgWkQDyYYU2MODh4eE9w2trGO2QVnvntswR1Vrw8PDwPsRLmlX5cb8zZHAlMODh4eFd481CQlvGnRWX8fDw8J7h5SNNbaKct9Bmm/Lmd/Hw8PAu8NoH/tl4Vj6AlWP2B7bw8PDwSt4PE1GHXMaxgcsAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/blogs/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '就这样走啦？';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '欢迎访问YoungLiang小站';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
